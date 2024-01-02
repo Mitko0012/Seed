@@ -12,6 +12,7 @@ namespace Seed
     {
         public static GameWindow window = new GameWindow(1300, 800);
         static int desiredFps = 60;
+        public static bool isRunning = false;
         public static int DesiredFps 
         {
             get
@@ -40,6 +41,7 @@ namespace Seed
         {
             Thread startUpdate = new Thread(() => CallUpdate());
             Thread startWindow = new Thread(() => window.ShowDialog());
+            isRunning = true;
             Start();
             startWindow.Start();
             Thread.Sleep(5);
