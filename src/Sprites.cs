@@ -24,14 +24,7 @@ namespace Seed
             SizeY = sizeY;
             Texture = texture;
             Image myImage;
-            try
-            {
-                myImage = Image.FromFile(Texture);
-            }
-            catch
-            {
-                myImage = Image.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Textures/NotFound.png"));
-            }
+            myImage = Image.FromFile(Texture);
             PictureBox.Location = new Point(posX, posY);
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             PictureBox.Size = new System.Drawing.Size(sizeX, sizeY);
@@ -86,11 +79,6 @@ namespace Seed
             try
             {
                 Image myImage = Image.FromFile(Texture);
-                GameLogic.window.Invoke(new Action(() => PictureBox.Image = myImage));
-            }
-            catch(FileNotFoundException)
-            {
-                Image myImage = Image.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Textures/NotFound.png"));
                 GameLogic.window.Invoke(new Action(() => PictureBox.Image = myImage));
             }
             catch
