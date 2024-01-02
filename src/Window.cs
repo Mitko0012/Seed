@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -11,10 +11,9 @@ namespace Seed
         {
             Height = height;
             Width = width;
-            foreach (Sprite sprite in Sprite.Sprites)
-            {
-                this.Controls.Add(sprite.PictureBox);
-            }
+            this.KeyDown += KeyHandler.KeyDown;
+            this.KeyUp += KeyHandler.KeyUp;
+            this.MouseMove += Mouse.GetMousePos;
         }
     }
 }
