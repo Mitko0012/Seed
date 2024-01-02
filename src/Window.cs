@@ -14,6 +14,8 @@ namespace Seed
             this.KeyDown += KeyHandler.KeyDown;
             this.KeyUp += KeyHandler.KeyUp;
             this.MouseMove += Mouse.GetMousePos;
+            this.MouseDown += Mouse.OnMouseDown;
+            this.MouseUp += Mouse.OnMouseUp;
         }
     }
 }
