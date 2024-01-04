@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using MyGame;
 
 namespace Seed
 {
@@ -8,7 +7,9 @@ namespace Seed
     {
         public static int MouseX{get; private set;}
         public static int MouseY{get; private set;}
-        public static bool IsDown{get; private set;}
+        public static bool LeftDown{get; private set;}
+        public static bool RightDown{get; private set;}
+        public static bool MiddleDown{get; private set;}
 
         public static void GetMousePos(object sender, MouseEventArgs e)
         {
@@ -18,12 +19,34 @@ namespace Seed
 
         public static void OnMouseDown(object sender, MouseEventArgs e)
         {
-            IsDown = true;
+            if(e.Button == MouseButtons.Left)
+            {
+                LeftDown = true;
+            }
+            if(e.Button == MouseButtons.Right)
+            {
+                RightDown = true;
+            }
+            if(e.Button == MouseButtons.Middle)
+            {
+                MiddleDown = true;
+            }
         }
 
         public static void OnMouseUp(object sender, MouseEventArgs e)
         {
-            IsDown = false;
+            if(e.Button == MouseButtons.Left)
+            {
+                LeftDown = false;
+            }
+            if(e.Button == MouseButtons.Right)
+            {
+                RightDown = false;
+            }
+            if(e.Button == MouseButtons.Middle)
+            {
+                MiddleDown = false;
+            }
         }
     }
 }
