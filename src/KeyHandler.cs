@@ -6,7 +6,7 @@ using Microsoft.VisualBasic.Devices;
 
 namespace Seed
 {
-    static class KeyHandler
+    public static class KeyHandler
     {
         public static Dictionary<string, bool> KeysDown {get; private set;} = new Dictionary<string, bool>();
         
@@ -30,6 +30,5 @@ namespace Seed
         {
             KeysDown[Convert.ToString(e.KeyCode)] = false;
         }
-   
     }
 }
