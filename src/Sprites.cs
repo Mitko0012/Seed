@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Xml;
+using Microsoft.VisualBasic;
 
 namespace Seed
 {
@@ -29,15 +30,15 @@ namespace Seed
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             PictureBox.Size = new System.Drawing.Size(sizeX, sizeY);
             PictureBox.Image = myImage;
-            if (GameLogic.isRunning == false)
+            if (GameLogic.IsRunning == false)
             {
-                GameLogic.window.Controls.Add(PictureBox);
+                GameLogic.Window.Controls.Add(PictureBox);
             }
             else
             {
                 try
                 {
-                    GameLogic.window.Invoke(() => GameLogic.window.Controls.Add(PictureBox));
+                    GameLogic.Window.Invoke(() => GameLogic.Window.Controls.Add(PictureBox));
                 }
                 catch
                 {
@@ -52,7 +53,7 @@ namespace Seed
             {
                 PosX = x;
                 PosY = y;
-                GameLogic.window.Invoke(new Action(() => PictureBox.Location = new Point(PosX, PosY)));
+                GameLogic.Window.Invoke(new Action(() => PictureBox.Location = new Point(PosX, PosY)));
             }
             catch
             {
@@ -66,7 +67,7 @@ namespace Seed
             {
                 SizeX = x;
                 SizeY = y;
-                GameLogic.window.Invoke(new Action(() => PictureBox.Size = new Size(PosX, PosY)));
+                GameLogic.Window.Invoke(new Action(() => PictureBox.Size = new Size(PosX, PosY)));
             }
             catch
             {
@@ -76,14 +77,21 @@ namespace Seed
 
         public void SetSprite(string Texture)
         {
-            try
+            Image myImage = Image.FromFile(Texture);
+            if(GameLogic.IsRunning)
             {
-                Image myImage = Image.FromFile(Texture);
-                GameLogic.window.Invoke(new Action(() => PictureBox.Image = myImage));
+                PictureBox.Image = myImage;
             }
-            catch
+            else
             {
-                Environment.Exit(0);
+                try
+                {
+                    GameLogic.Window.Invoke(new Action(() => PictureBox.Image = myImage));
+                }
+                catch
+                {   
+                    Environment.Exit(0);
+                }
             }
         }
 
