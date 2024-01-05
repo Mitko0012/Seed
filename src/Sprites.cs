@@ -109,6 +109,21 @@ namespace Seed
             }
         }
 
+        public bool IsColliding(Collider collider)
+        {
+            if(this.PosX < collider.ParentSprite.PosX + collider.RelativeXEnd && 
+            this.PosX + this.SizeX > collider.ParentSprite.PosX + collider.RelativeXStart &&
+            this.PosY < collider.ParentSprite.PosY + collider.RelativeYEnd && 
+            this.PosY + this.SizeY > collider.ParentSprite.PosY)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool IsPointInside(int pointX, int pointY)
         {
             if(this.PosX < pointX && this.PosX + this.SizeX > pointX &&
