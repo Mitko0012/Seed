@@ -94,47 +94,5 @@ namespace Seed
                 }
             }
         }
-
-
-        public bool IsColliding(Sprite sprite)
-        {
-            if(this.PosX < sprite.PosX + sprite.SizeX && this.PosX + this.SizeX > sprite.PosX &&
-            this.PosY < sprite.PosY + sprite.SizeY && this.PosY + this.SizeY > sprite.PosY)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool IsColliding(Collider collider)
-        {
-            if(this.PosX < collider.ParentSprite.PosX + collider.RelativeXEnd && 
-            this.PosX + this.SizeX > collider.ParentSprite.PosX + collider.RelativeXStart &&
-            this.PosY < collider.ParentSprite.PosY + collider.RelativeYEnd && 
-            this.PosY + this.SizeY > collider.ParentSprite.PosY)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool IsPointInside(int pointX, int pointY)
-        {
-            if(this.PosX < pointX && this.PosX + this.SizeX > pointX &&
-            this.PosY < pointY && this.PosY + this.SizeY > pointY)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }
