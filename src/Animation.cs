@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -9,7 +10,7 @@ namespace Seed
         Sprite sprite;
         public int[] WaitTimes {get; set;}
         string[] frames;
-        public static bool IsRunning {get; private set;}
+        public bool IsRunning {get; private set;}
         
         public Animation(Sprite sprite, int waitTime, params string[] frames)
         {
@@ -59,9 +60,9 @@ namespace Seed
             IsRunning = false;
         }
 
-        public static void StopAnimation()
+        public void StopAnimation()
         {
-            IsRunning = false;
+            this.IsRunning = false;
         }
     }
 }
