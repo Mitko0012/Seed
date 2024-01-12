@@ -33,7 +33,6 @@ namespace Seed
             {
                 Thread.Sleep(1);
             }
-            Console.WriteLine("Stopped lol");
             outputDevice.Stop();
             IsPlaying = false;
         }
