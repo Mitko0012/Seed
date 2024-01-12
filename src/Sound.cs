@@ -42,5 +42,10 @@ namespace Seed
         {
             this.IsPlaying = false;
         }
+
+        public void ChangeSound(float vol)
+        {
+            outputDevice.Volume = vol;
+        }
     }
 }
