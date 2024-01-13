@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Dynamic;
 using System.Windows.Forms;
 using System.Xml;
 using Microsoft.VisualBasic;
@@ -16,7 +17,7 @@ namespace Seed
         public string Texture {get; private set;}    
     
 
-        public PictureBox PictureBox = new PictureBox();
+        public PictureBox PictureBox {get; set;} = new PictureBox();
         public Sprite(int posX, int posY, int sizeX, int sizeY, string texture)
         {
             PosX = posX;
@@ -30,6 +31,33 @@ namespace Seed
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             PictureBox.Size = new System.Drawing.Size(sizeX, sizeY);
             PictureBox.Image = myImage;
+            if (GameLogic.IsRunning == false)
+            {
+                GameLogic.Window.Controls.Add(PictureBox);
+            }
+            else
+            {
+                try
+                {
+                    GameLogic.Window.Invoke(() => GameLogic.Window.Controls.Add(PictureBox));
+                }
+                catch
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
+
+        public Sprite(int posX, int posY, int sizeX, int sizeY, int R, int G, int B)
+        {
+            PosX = posX;
+            PosY = posY;
+            SizeX = sizeX;
+            SizeY = sizeY;
+            PictureBox.Location = new Point(posX, posY);
+            PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            PictureBox.Size = new System.Drawing.Size(sizeX, sizeY);
+            PictureBox.BackColor = Color.FromArgb(R, G, B);
             if (GameLogic.IsRunning == false)
             {
                 GameLogic.Window.Controls.Add(PictureBox);
