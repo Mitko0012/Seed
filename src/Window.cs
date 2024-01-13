@@ -17,5 +17,10 @@ namespace Seed
             this.MouseDown += Mouse.OnMouseDown;
             this.MouseUp += Mouse.OnMouseUp;
         }
+
+        public void SetLayer(Sprite sprite, int layer)
+        {
+            Controls.SetChildIndex(sprite.PictureBox, layer);
+        }
     }
 }
