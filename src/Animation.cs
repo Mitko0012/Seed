@@ -11,11 +11,13 @@ namespace Seed
         public int[] WaitTimes {get; set;}
         string[] frames;
         public bool IsRunning {get; private set;}
+        public bool Looping {get; set;}
         
-        public Animation(Sprite sprite, int waitTime, params string[] frames)
+        public Animation(Sprite sprite, int waitTime, bool isLooping, params string[] frames)
         {
             this.frames = frames;
             this.sprite = sprite;
+            Looping = isLooping;
             List<int> waitTimes = new List<int>();
             foreach(string frame in frames)
             {
@@ -57,7 +59,14 @@ namespace Seed
                     break;
                 }
             }
-            IsRunning = false;
+            if(Looping && IsRunning)
+            {
+                PlayAnimation();
+            }
+            else
+            {
+                IsRunning = false;
+            }
         }
 
         public void StopAnimation()
