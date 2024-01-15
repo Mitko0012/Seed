@@ -15,7 +15,8 @@ namespace Seed
         public int SizeX {get; private set;}
         public int SizeY {get; private set;}
         public string Texture {get; private set;}    
-    
+        public bool IsVisible {get; private set;} = true;
+        public bool IsActive {get; private set;} = true;
 
         public PictureBox PictureBox {get; set;} = new PictureBox();
         public Sprite(int posX, int posY, int sizeX, int sizeY, string texture)
@@ -121,6 +122,28 @@ namespace Seed
                     Environment.Exit(0);
                 }
             }
+        }
+        public void SetVisibility(bool a)
+        {
+            if (IsActive)
+            {
+                switch (a)
+                {
+                    case true:
+                    GameLogic.Window.Invoke(() => GameLogic.Window.Controls.Add(this.PictureBox));
+                    break;
+                    case false:
+                    GameLogic.Window.Invoke(() => GameLogic.Window.Controls.Remove(this.PictureBox));
+                    break;
+                }
+                IsVisible = a;
+            }
+        }
+
+        public void SetActive(bool a)
+        {
+            SetVisibility(a);
+            IsActive = a;
         }
     }
 }
