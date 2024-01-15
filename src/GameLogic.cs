@@ -35,7 +35,7 @@ namespace Seed
         }
 
         public static int Fps {get; private set;}
-        static public double deltaTime {get; private set;}
+        static public double DeltaTime {get; private set;}
         
         public abstract void Start();
         public abstract void Update();
@@ -57,7 +57,7 @@ namespace Seed
             while(true)
             {
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                deltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
+                DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
                 timeAtLastFrameMillis = timeNowMillis;
                 Update();
                 FrameNumber++;
@@ -68,7 +68,7 @@ namespace Seed
                 {
                     Thread.Sleep(Convert.ToInt32(waitTime));
                 }
-                Fps = Convert.ToInt32(1f/deltaTime);
+                Fps = Convert.ToInt32(1f/DeltaTime);
             }
         } 
     }
