@@ -17,7 +17,6 @@ namespace Seed
                 if(!KeysDown.ContainsKey(Convert.ToString(key)))
                 {
                     KeysDown.Add(Convert.ToString(key), false);
-                    Console.WriteLine(key);
                 }
             }
         }
@@ -30,5 +29,6 @@ namespace Seed
         {
             KeysDown[Convert.ToString(e.KeyCode)] = false;
         }
+   
     }
 }
