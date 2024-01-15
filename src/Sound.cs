@@ -11,10 +11,12 @@ namespace Seed
         WaveOutEvent outputDevice = new WaveOutEvent();
         public bool IsPlaying {get; private set;}
         string path;
-        public Sound(string path, float volume)
+        public bool Looping {get; set;}
+        public Sound(string path, float volume, bool looping)
         {
             this.path = path;
             outputDevice.Volume = volume;
+            this.Looping = looping;
         }
 
         public void Play()
@@ -33,8 +35,15 @@ namespace Seed
             {
                 Thread.Sleep(1);
             }
-            outputDevice.Stop();
-            IsPlaying = false;
+            if(Looping && IsPlaying)
+            {
+                this.Play();
+            }
+            else
+            {
+                outputDevice.Stop();
+                IsPlaying = false;
+            }
         }
 
         public void Stop()
