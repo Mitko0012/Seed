@@ -96,7 +96,7 @@ namespace Seed
             {
                 SizeX = x;
                 SizeY = y;
-                GameLogic.Window.Invoke(new Action(() => PictureBox.Size = new Size(PosX, PosY)));
+                GameLogic.Window.Invoke(new Action(() => PictureBox.Size = new Size(SizeX, SizeY)));
             }
             catch
             {
