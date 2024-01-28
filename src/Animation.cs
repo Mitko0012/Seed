@@ -47,7 +47,7 @@ namespace Seed
                     {
                         if (GameLogic.FrameNumber > i && !completedFrame)
                         {
-                            sprite.SetSprite(frames[Array.IndexOf(frames, frame)]);
+                            sprite.Texture = frames[Array.IndexOf(frames, frame)];
                             completedFrame = true;
                         }
                     }
