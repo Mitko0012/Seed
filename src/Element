@@ -1,0 +1,12 @@
+using System;
+
+namespace Seed
+{
+    public class Element
+    {
+        public int PosX;
+        public int PosY;
+        public int Width;
+        public int Height;
+    }
+}
