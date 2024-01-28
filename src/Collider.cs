@@ -11,23 +11,21 @@ namespace Seed
 
         public int RelativeYEnd{get; private set;}
 
-        public Sprite ParentSprite{get; private set;}
+        public Element ParentElement{get; private set;}
 
-        public Collider(int relativeXStart, int relativeXEnd, int relativeYStart, int relativeYEnd, Sprite sprite)
+        public Collider(int relativeXStart, int relativeXEnd, int relativeYStart, int relativeYEnd, Element element)
         {
             RelativeXStart = relativeXStart;
             RelativeXEnd = relativeXEnd;
             RelativeYStart = relativeYStart;
             RelativeYEnd = relativeYEnd;
-            ParentSprite = sprite;
+            ParentElement = element;
         }
         
-        static public bool IsColliding(Sprite sprite, Sprite sprite2)
+        static public bool IsColliding(Element element, Element element2)
         {
-            if(sprite.IsActive && sprite2.IsActive)
-            {
-                if(sprite2.PosX < sprite.PosX + sprite.SizeX && sprite2.PosX + sprite2.SizeX > sprite.PosX &&
-                sprite2.PosY < sprite.PosY + sprite.SizeY && sprite2.PosY + sprite2.SizeY > sprite.PosY)
+                if(element2.PosX < element.PosX + element.Width && element2.PosX + element2.Width > element.PosX &&
+                element.PosY < element.PosY + element.Height && element2.PosY + element2.Height > element.PosY)
                 {
                     return true;
                 }
@@ -35,21 +33,14 @@ namespace Seed
                 {
                     return false;
                 }
-            }
-            else
-            {
-                return false;
-            }
         }
 
-        static public bool IsColliding(Sprite sprite, Collider collider)
+        static public bool IsColliding(Element element, Collider collider)
         {
-            if(sprite.IsActive && collider.ParentSprite.IsActive)
-            {
-                if(sprite.PosX < collider.ParentSprite.PosX + collider.RelativeXEnd && 
-                sprite.PosX + sprite.SizeX > collider.ParentSprite.PosX + collider.RelativeXStart &&
-                sprite.PosY < collider.ParentSprite.PosY + collider.RelativeYEnd && 
-                sprite.PosY + sprite.SizeY > collider.ParentSprite.PosY)
+                if(element.PosX < collider.ParentElement.PosX + collider.RelativeXEnd && 
+                element.PosX + element.Width > collider.ParentElement.PosX + collider.RelativeXStart &&
+                element.PosY < collider.ParentElement.PosY + collider.RelativeYEnd && 
+                element.PosY + element.Height > collider.ParentElement.PosY)
                 {
                     return true;
                 }
@@ -57,21 +48,14 @@ namespace Seed
                 {
                     return false;
                 }
-            }
-            else
-            {
-                return false;
-            }
         }
 
         static public bool IsColliding(Collider collider, Collider collider2)
         {
-            if(collider.ParentSprite.IsActive && collider2.ParentSprite.IsActive)
-            {
-                if(collider2.ParentSprite.PosX + collider2.RelativeXStart < collider.ParentSprite.PosX + collider.RelativeXEnd && 
-                collider2.ParentSprite.PosX + collider2.RelativeXEnd > collider.ParentSprite.PosX + collider.RelativeXStart &&
-                collider2.ParentSprite.PosY + collider2.RelativeYStart < collider.ParentSprite.PosY + collider.RelativeYEnd && 
-                collider2.ParentSprite.PosX + collider2.RelativeYEnd > collider.ParentSprite.PosY + collider.RelativeYStart)
+                if(collider2.ParentElement.PosX + collider2.RelativeXStart < collider.ParentElement.PosX + collider.RelativeXEnd && 
+                collider2.ParentElement.PosX + collider2.RelativeXEnd > collider.ParentElement.PosX + collider.RelativeXStart &&
+                collider2.ParentElement.PosY + collider2.RelativeYStart < collider.ParentElement.PosY + collider.RelativeYEnd && 
+                collider2.ParentElement.PosX + collider2.RelativeYEnd > collider.ParentElement.PosY + collider.RelativeYStart)
                 {
                     return true;
                 }
@@ -80,18 +64,11 @@ namespace Seed
                     return false;
                 }
             }
-            else
-            {
-                return false;
-            }
-        }
 
-        static public bool IsPointInside(Sprite sprite, int pointX, int pointY)
+        static public bool IsPointInside(Element element, int pointX, int pointY)
         {
-            if(sprite.IsActive)
-            {
-                if(sprite.PosX < pointX && sprite.PosX + sprite.SizeX > pointX &&
-                sprite.PosY < pointY && sprite.PosY + sprite.SizeY > pointY)
+                if(element.PosX < pointX && element.PosX + element.Width > pointX &&
+                element.PosY < pointY && element.PosY + element.Height > pointY)
                 {
                     return true;
                 }
@@ -99,11 +76,6 @@ namespace Seed
                 {
                     return false;
                 }
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }
