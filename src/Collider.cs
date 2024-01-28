@@ -1,91 +1,81 @@
 using System;
-using System.CodeDom;
-using System.Diagnostics;
-using System.Runtime.InteropServices.Marshalling;
-using System.Security.Policy;
-using System.Text.Encodings.Web;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.ApplicationServices;
-using Seed;
 
 namespace Seed
 {
-    public abstract class GameLogic
+    public class Collider
     {
-        public static GameWindow Window = new GameWindow(1300, 800);
-        public static Graphics G {get; private set;}
-        static int desiredFps = 60;
-        static List<GameLogic> scripts = new List<GameLogic>();
-        public static int FrameNumber {get; private set;} = 0;
-        public static bool IsRunning {get; private set;} = false;
-        public static int DesiredFps 
+        public int RelativeXStart{get; private set;}
+        public int RelativeXEnd{get; private set;}
+        public int RelativeYStart{get; private set;}
+
+        public int RelativeYEnd{get; private set;}
+
+        public Element ParentElement{get; private set;}
+
+        public Collider(int relativeXStart, int relativeXEnd, int relativeYStart, int relativeYEnd, Element element)
         {
-            get
-            {
-                return desiredFps;
-            }
-            set
-            {
-                if (value <= 0)
+            RelativeXStart = relativeXStart;
+            RelativeXEnd = relativeXEnd;
+            RelativeYStart = relativeYStart;
+            RelativeYEnd = relativeYEnd;
+            ParentElement = element;
+        }
+        
+        static public bool IsColliding(Element element, Element element2)
+        {
+                if(element2.PosX < element.PosX + element.Width && element2.PosX + element2.Width > element.PosX &&
+                element.PosY < element.PosY + element.Height && element2.PosY + element2.Height > element.PosY)
                 {
-                    throw new InvalidDataException("Fps cannot be less than 0");
+                    return true;
                 }
                 else
                 {
-                    desiredFps = value;
+                    return false;
                 }
-            }
         }
 
-        public static int Fps {get; private set;}
-        static public double DeltaTime {get; private set;}
-        
-        public abstract void OnStart();
-        public abstract void OnUpdate();
-        public abstract void OnDraw();
-        public GameLogic()
+        static public bool IsColliding(Element element, Collider collider)
         {
-            scripts.Add(this);
-            Thread startUpdate = new Thread(() => CallUpdate());
-            Thread startWindow = new Thread(() => Window.ShowDialog());
-            IsRunning = true;
-            startWindow.Start();
-            Thread.Sleep(5);
-            G = Window.Invoke(() => Window.CreateGraphics());
-            startUpdate.Start();
-        }
-
-        public void CallUpdate()
-        {
-            Thread.Sleep(3);
-            OnStart();
-            long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            while(true)
-            {
-                long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
-                timeAtLastFrameMillis = timeNowMillis;
-                OnUpdate();
-                Window.Invalidate();
-                FrameNumber++;
-                long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                long timeItTook = endTime - timeAtLastFrameMillis;
-                long waitTime = 1000/DesiredFps - timeItTook;
-                if(waitTime > 0)
+                if(element.PosX < collider.ParentElement.PosX + collider.RelativeXEnd && 
+                element.PosX + element.Width > collider.ParentElement.PosX + collider.RelativeXStart &&
+                element.PosY < collider.ParentElement.PosY + collider.RelativeYEnd && 
+                element.PosY + element.Height > collider.ParentElement.PosY)
                 {
-                    Thread.Sleep(Convert.ToInt32(waitTime));
+                    return true;
                 }
-                Fps = Convert.ToInt32(1f/DeltaTime);
-            }
+                else
+                {
+                    return false;
+                }
         }
-        public static void Paint(object sender, PaintEventArgs e)
+
+        static public bool IsColliding(Collider collider, Collider collider2)
         {
-            Console.WriteLine(sender.GetType() + " " + e.GetType());;
-            G = e.Graphics;
-            foreach(GameLogic script in scripts)
-            {
-                script.OnDraw();
+                if(collider2.ParentElement.PosX + collider2.RelativeXStart < collider.ParentElement.PosX + collider.RelativeXEnd && 
+                collider2.ParentElement.PosX + collider2.RelativeXEnd > collider.ParentElement.PosX + collider.RelativeXStart &&
+                collider2.ParentElement.PosY + collider2.RelativeYStart < collider.ParentElement.PosY + collider.RelativeYEnd && 
+                collider2.ParentElement.PosX + collider2.RelativeYEnd > collider.ParentElement.PosY + collider.RelativeYStart)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-        } 
+
+        static public bool IsPointInside(Element element, int pointX, int pointY)
+        {
+                if(element.PosX < pointX && element.PosX + element.Width > pointX &&
+                element.PosY < pointY && element.PosY + element.Height > pointY)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
     }
 }
