@@ -5,13 +5,13 @@ namespace Seed
 {
     public class Collider
     {
-        public int RelativeXStart{get; private set;}
-        public int RelativeXEnd{get; private set;}
+        public int RelativeXStart{get; set;}
+        public int RelativeXEnd{get; set;}
         public int RelativeYStart{get; private set;}
 
-        public int RelativeYEnd{get; private set;}
+        public int RelativeYEnd{get; set;}
 
-        public Element ParentElement{get; private set;}
+        public Element ParentElement{get; set;}
 
         public Collider(int relativeXStart, int relativeXEnd, int relativeYStart, int relativeYEnd, Element element)
         {
@@ -22,7 +22,7 @@ namespace Seed
             ParentElement = element;
         }
         
-        static public bool IsColliding(Element element, Element element2)
+        static public bool IsColliding(CollidableElement element, CollidableElement element2)
         {
                 if(element2.PosX < element.PosX + element.Width && element2.PosX + element2.Width > element.PosX &&
                 element.PosY < element.PosY + element.Height && element2.PosY + element2.Height > element.PosY)
@@ -35,7 +35,7 @@ namespace Seed
                 }
         }
 
-        static public bool IsColliding(Element element, Collider collider)
+        static public bool IsColliding(CollidableElement element, Collider collider)
         {
                 if(element.PosX < collider.ParentElement.PosX + collider.RelativeXEnd && 
                 element.PosX + element.Width > collider.ParentElement.PosX + collider.RelativeXStart &&
@@ -65,10 +65,22 @@ namespace Seed
                 }
             }
 
-        static public bool IsPointInside(Element element, int pointX, int pointY)
+        static public bool IsPointInside(CollidableElement element, int pointX, int pointY)
         {
                 if(element.PosX < pointX && element.PosX + element.Width > pointX &&
                 element.PosY < pointY && element.PosY + element.Height > pointY)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
+        static public bool IsPointInside(Collider element, int pointX, int pointY)
+        {
+                if(element.ParentElement.PosX + element.RelativeXStart < pointX && element.ParentElement.PosX + element.RelativeXStart + element.RelativeXEnd > pointX &&
+                element.ParentElement.PosY + element.RelativeYStart < pointY && element.ParentElement.PosY + element.RelativeYStart + element.RelativeYEnd > pointY)
                 {
                     return true;
                 }
