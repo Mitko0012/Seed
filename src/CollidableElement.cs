@@ -2,10 +2,8 @@ using System;
 
 namespace Seed
 {
-    public class Element
+    public class CollidableElement : Element
     {
-        public int PosX;
-        public int PosY;
         public int Width;
         public int Height;
     }
