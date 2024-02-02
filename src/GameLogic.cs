@@ -17,6 +17,7 @@ namespace Seed
         static int desiredFps = 60;
         static List<GameLogic> scripts = new List<GameLogic>();
         public static int FrameNumber {get; private set;} = 0;
+        public static bool Drawing;
         public static bool IsRunning {get; private set;} = false;
         public static int DesiredFps 
         {
@@ -67,10 +68,10 @@ namespace Seed
                 timeAtLastFrameMillis = timeNowMillis;
                 OnUpdate();
                 Window.Invalidate();
-                FrameNumber++;
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 long timeItTook = endTime - timeAtLastFrameMillis;
                 long waitTime = 1000/DesiredFps - timeItTook;
+                FrameNumber++;
                 if(waitTime > 0)
                 {
                     Thread.Sleep(Convert.ToInt32(waitTime));
@@ -80,12 +81,13 @@ namespace Seed
         }
         public static void Paint(object sender, PaintEventArgs e)
         {
-            Console.WriteLine(sender.GetType() + " " + e.GetType());;
+            Drawing = true;
             G = e.Graphics;
             foreach(GameLogic script in scripts)
             {
                 script.OnDraw();
             }
+            Drawing = false;
         } 
     }
 }
