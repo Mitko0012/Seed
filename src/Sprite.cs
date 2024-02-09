@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Drawing.Drawing2D;
 using System.Dynamic;
 using System.Windows.Forms;
 
@@ -8,8 +9,8 @@ namespace Seed
 {
     public class Sprite : CollidableElement
     {
-        public string Texture {get; set;}    
-        public Sprite(int posX, int posY, int sizeX, int sizeY, string texture)
+        public Image Texture {get; set;}    
+        public Sprite(int posX, int posY, int sizeX, int sizeY, Image texture)
         {
             PosX = posX;
             PosY = posY;
@@ -18,28 +19,14 @@ namespace Seed
             Texture = texture;
         }
 
-        public void Draw()
+        protected override void SpecificDraw()
         {
-            if(GameLogic.Drawing)
-            {
-                if(LastDrawnFrame == GameLogic.FrameNumber && GameLogic.FrameNumber != 1)
-                {
-                    throw new Exception("Element cannot be drawn more than once per frame");
-                }
-                else
-                {
-                    Image myImage = Image.FromFile(Texture);
-                    GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
-                    GameLogic.G.RotateTransform(Angle);
-                    GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
-                    GameLogic.G.DrawImage(myImage, PosX, PosY, Width, Height);
-                    LastDrawnFrame = GameLogic.FrameNumber;
-                }
-            }
-            else
-            {
-                throw new Exception("The game is not drawing yet. Please draw the element using the OnDraw method.");
-            }
+            GraphicsState state = GameLogic.G.Save();
+            GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
+            GameLogic.G.RotateTransform(Angle);
+            GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
+            GameLogic.G.DrawImage(Texture, PosX, PosY, Width, Height);
+            GameLogic.G.Restore(state);
         }
     }
 }
