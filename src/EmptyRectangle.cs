@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Seed
 {
@@ -17,27 +18,16 @@ namespace Seed
             RectangleWidth = rectangleWidth;
         }
 
-        public void Draw()
+        protected override void SpecificDraw()
         {
-            if(GameLogic.Drawing)
-            {
-                if(LastDrawnFrame == GameLogic.FrameNumber && GameLogic.FrameNumber != 1)
-                {
-                    throw new Exception("Element cannot be drawn more than once per frame");
-                }
-                else
-                {
-                    Pen pen = new Pen(Color, RectangleWidth);
-                    GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
-                    GameLogic.G.RotateTransform(Angle);
-                    GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
-                    GameLogic.G.DrawRectangle(pen, PosX, PosY, Width, Height);
-                }
-            }
-            else
-            {
-                throw new Exception("The game is not drawing yet. Please draw the element using the OnDraw method.");
-            }
+            GraphicsState state = GameLogic.G.Save();
+            Pen pen = new Pen(Color, RectangleWidth);
+            GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
+            GameLogic.G.RotateTransform(Angle);
+            GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
+            GameLogic.G.DrawRectangle(pen, PosX, PosY, Width, Height);
+            GameLogic.G.Restore(state);
+            pen.Dispose();
         }
     }
 }
