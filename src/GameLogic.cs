@@ -17,8 +17,6 @@ namespace Seed
         static int desiredFps = 60;
         static List<GameLogic> scripts = new List<GameLogic>();
         public static int FrameNumber {get; private set;} = 0;
-        public static bool Drawing;
-        public static bool IsRunning {get; private set;} = false;
         public static int DesiredFps 
         {
             get
@@ -49,7 +47,6 @@ namespace Seed
             scripts.Add(this);
             Thread startUpdate = new Thread(() => CallUpdate());
             Thread startWindow = new Thread(() => Window.ShowDialog());
-            IsRunning = true;
             startWindow.Start();
             Thread.Sleep(5);
             G = Window.Invoke(() => Window.CreateGraphics());
@@ -81,13 +78,11 @@ namespace Seed
         }
         public static void Paint(object sender, PaintEventArgs e)
         {
-            Drawing = true;
-            G = e.Graphics;
-            foreach(GameLogic script in scripts)
-            {
-                script.OnDraw();
-            }
-            Drawing = false;
+                G = e.Graphics;
+                foreach(GameLogic script in scripts)
+                {
+                    script.OnDraw();
+                }
         } 
     }
 }
