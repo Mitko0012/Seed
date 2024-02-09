@@ -1,12 +1,12 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Seed
 {
     public class FullRectangle : CollidableElement
     {
-        
-        Color BackgroundColor;
+         public Color BackgroundColor;
         public FullRectangle(int posX, int posY, int width, int height, Color color)
         {
             PosX = posX;
@@ -16,27 +16,16 @@ namespace Seed
             BackgroundColor = color;
         }
 
-        public void Draw()
+        protected override void SpecificDraw()
         {
-            if(GameLogic.Drawing)
-            {
-                if(LastDrawnFrame == GameLogic.FrameNumber && GameLogic.FrameNumber != 1)
-                {
-                    throw new Exception("Element cannot be drawn more than once per frame");
-                }
-                else
-                {
-                    Brush brush = new SolidBrush(BackgroundColor);
-                    GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
-                    GameLogic.G.RotateTransform(Angle);
-                    GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
-                    GameLogic.G.FillRectangle(brush, PosX, PosY, Width, Height);
-                }
-            }
-            else
-            {
-                throw new Exception("The game is not drawing yet. Please draw the element using the OnDraw method.");
-            }
+            GraphicsState state = GameLogic.G.Save();
+            Brush brush = new SolidBrush(BackgroundColor);
+            GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
+            GameLogic.G.RotateTransform(Angle);
+            GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
+            GameLogic.G.FillRectangle(brush, PosX, PosY, Width, Height);
+            GameLogic.G.Restore(state);
+            brush.Dispose();
         }
     }
 }
