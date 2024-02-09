@@ -9,17 +9,17 @@ namespace Seed
     {
         Sprite sprite;
         public int[] WaitTimes {get; set;}
-        string[] frames;
+        Image[] frames;
         public bool IsRunning {get; private set;}
         public bool Looping {get; set;}
         
-        public Animation(Sprite sprite, int waitTime, bool isLooping, params string[] frames)
+        public Animation(Sprite sprite, int waitTime, bool isLooping, params Image[] frames)
         {
             this.frames = frames;
             this.sprite = sprite;
             Looping = isLooping;
             List<int> waitTimes = new List<int>();
-            foreach(string frame in frames)
+            foreach(Image frame in frames)
             {
                 waitTimes.Add(waitTime);
             }
@@ -37,7 +37,7 @@ namespace Seed
             Stopwatch stopwatch = new Stopwatch();
             IsRunning = true;
             stopwatch.Start();
-            foreach(string frame in this.frames)
+            foreach(Image frame in this.frames)
             {
                 if(IsRunning)
                 {
