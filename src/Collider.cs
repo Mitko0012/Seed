@@ -25,7 +25,7 @@ namespace Seed
         static public bool IsColliding(CollidableElement element, CollidableElement element2)
         {
                 if(element2.PosX < element.PosX + element.Width && element2.PosX + element2.Width > element.PosX &&
-                element.PosY < element.PosY + element.Height && element2.PosY + element2.Height > element.PosY)
+                element2.PosY < element.PosY + element.Height && element2.PosY + element2.Height > element.PosY)
                 {
                     return true;
                 }
