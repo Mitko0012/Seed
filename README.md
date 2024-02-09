@@ -6,79 +6,57 @@ A 2D graphics library built in C#. It utilizes WinForms for the 2D graphics and 
 An example of Seed code
 ```C#
 using System;
-using System.Media;
-using System.Security.Cryptography;
-using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using Seed;
 
-namespace TestGame
+namespace Test
 {
-    class TestGame : GameLogic
+    class Program : GameLogic
     {
-        static string texture1 = @"path_to_your_file";
-        static string texture2 = @"path_to_your_file";
-        static string texture3 = @"path_to_your_file";
-        static string texture4 = @"path_to_your_file";
-        Sprite sprite1 = new Sprite(1, 56, 250, 250, @"path_to_your_file");
-        Sprite ground = new Sprite(1, 560, 800, 25, 0, 0, 0);
-        static bool isWalkingLeft = false;
-        static int gravSpeed = 500;
-        static int velocity = 0;
-        static int xVelocity = 0;
-        Animation walking = new Animation(sprite1, 200, true, texture1, texture2);
-        Animation walkingLeft = new Animation(sprite1, 200, true, texture3, texture4);
-
-        public override void Start()
+        static Sprite sprite = new Sprite(Window.Width / 2 - 200/2, Window.Height / 2 - 200/2, 200, 200, Image.FromFile(@"example_path"));
+        Ellipse line = new Ellipse(0, 100, 200, 200, Color.Blue);
+        static Animation anim = new Animation(sprite, 10, true, Image.FromFile(@"example_path"), 
+        Image.FromFile(@"example_path"));
+        public override void OnStart()
         {
+            sprite.RotationCenterX = sprite.Width / 2;
+            sprite.RotationCenterY = sprite.Height / 2;
+            Window.Invoke(() => Window.FullScreen = true);
+            line.RotationCenterX = line.Width / 2;
+            line.RotationCenterY = line.Height / 2;
         }
-        public override void Update()
+        public override void OnUpdate()
         {
-            if(!Collider.IsColliding(sprite1, ground))
-            {
-                velocity -= Convert.ToInt32(gravSpeed * DeltaTime);
-            }
-            else if(KeyHandler.KeysDown["Space"])
-            {
-                velocity = 400;
-            }
-            else
-            {
-                velocity = 0;
-            }
             if(KeyHandler.KeysDown["D"])
             {
-                if(!walking.IsRunning)
+                sprite.Angle += 10f;
+                if(!anim.IsRunning)
                 {
-                    walkingLeft.StopAnimation();
-                    walking.StartAnimation();
+                    anim.StartAnimation();
                 }
-                isWalkingLeft = false;
-                xVelocity = 400;
             }
             else if(KeyHandler.KeysDown["A"])
             {
-                if(!walkingLeft.IsRunning)
+                sprite.Angle -= 10f;
+                if(!anim.IsRunning)
                 {
-                    walking.StopAnimation();
-                    walkingLeft.StartAnimation();
-                    Console.WriteLine("Starting left anim!");
+                    anim.StartAnimation();
                 }
-                isWalkingLeft = true;
-                xVelocity = -400;
             }
-            else
+            else 
             {
-                walking.StopAnimation();
-                walkingLeft.StopAnimation();
-                sprite1.SetSprite(isWalkingLeft? texture3 : texture1);
-                xVelocity = 0;
+                anim.StopAnimation();
             }
-            sprite1.SetPosition(sprite1.PosX + Convert.ToInt32(xVelocity * DeltaTime), sprite1.PosY - Convert.ToInt32(velocity * DeltaTime));
         }
-
+        public override void OnDraw()
+        {  
+            sprite.Draw();
+            line.Draw();
+        }
         static void Main(string[] args)
         {
-            TestGame myGame = new TestGame();
+            Program prog = new Program();
         }
     }
 }
