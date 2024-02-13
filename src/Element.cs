@@ -11,14 +11,6 @@ namespace Seed
         public int RotationCenterX = 0;
         public int RotationCenterY = 0;
         public float Angle = 0f;
-        protected int lastDrawnFrame = 1;
-        Size lastDrawnWinSize;
-        public void Draw()
-        {  
-            SpecificDraw();
-            lastDrawnFrame = GameLogic.FrameNumber;
-            lastDrawnWinSize = GameLogic.Window.Size;
-        }
-        protected virtual void SpecificDraw(){}
+        public virtual void Draw(){}
     }
 }
