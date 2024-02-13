@@ -15,7 +15,7 @@ namespace Seed
             Height = height;
             BackgroundColor = color;
         }
-        protected override void SpecificDraw()
+        public override void Draw()
         {
             GraphicsState state = GameLogic.G.Save();
             Brush brush = new SolidBrush(BackgroundColor);
