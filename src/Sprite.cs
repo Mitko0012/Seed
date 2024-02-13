@@ -19,7 +19,7 @@ namespace Seed
             Texture = texture;
         }
 
-        protected override void SpecificDraw()
+        protected override void Draw()
         {
             GraphicsState state = GameLogic.G.Save();
             GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
