@@ -15,7 +15,7 @@ namespace Seed
         public static GameWindow Window = new GameWindow(1300, 800);
         public static Graphics G {get; private set;}
         static int desiredFps = 60;
-        static List<GameLogic> scripts = new List<GameLogic>();
+        static List<WeakReference<GameLogic>> scripts = new List<WeakReference<GameLogic>>();
         public static int FrameNumber {get; private set;} = 0;
         public static int DesiredFps 
         {
@@ -44,32 +44,39 @@ namespace Seed
         public abstract void OnDraw();
         public GameLogic()
         {
-            scripts.Add(this);
-            Thread startUpdate = new Thread(() => CallUpdate());
-            Thread startWindow = new Thread(() => Window.ShowDialog());
-            startWindow.Start();
+            scripts.Add(new WeakReference<GameLogic>(this));
+            OnStart();
             Thread.Sleep(5);
-            G = Window.Invoke(() => Window.CreateGraphics());
-            startUpdate.Start();
         }
 
-        public void CallUpdate()
+        static GameLogic()
+        {
+            Thread startWindow = new Thread(() => Window.ShowDialog());
+            startWindow.Start();
+            Thread callUpdate = new Thread(() => CallUpdate());
+            callUpdate.Start();
+        }
+
+        public static void CallUpdate()
         {
             Thread.Sleep(3);
-            OnStart();
             long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             while(true)
             {
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
                 timeAtLastFrameMillis = timeNowMillis;
-                OnUpdate();
+                foreach(WeakReference<GameLogic> script in scripts)
+                {
+                    script.TryGetTarget(out GameLogic target);
+                    target.OnUpdate();
+                }
                 Window.Invalidate();
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 long timeItTook = endTime - timeAtLastFrameMillis;
                 long waitTime = 1000/DesiredFps - timeItTook;
                 FrameNumber++;
-                if(waitTime > 0)
+                if(waitTime > 0)    
                 {
                     Thread.Sleep(Convert.ToInt32(waitTime));
                 }
@@ -79,9 +86,10 @@ namespace Seed
         public static void Paint(object sender, PaintEventArgs e)
         {
                 G = e.Graphics;
-                foreach(GameLogic script in scripts)
+                foreach(WeakReference<GameLogic> script in scripts)
                 {
-                    script.OnDraw();
+                    script.TryGetTarget(out GameLogic target);
+                    target.OnDraw();
                 }
         } 
     }
