@@ -3,7 +3,7 @@
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />
     <EmbeddedResource Include="Icons\Icon.ico" />
-    <None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt"/>
+    <None Include="../LICENSE" Pack="true" PackagePath="LICENSE.txt"/>
   </ItemGroup>
 
   <PropertyGroup>
@@ -11,7 +11,7 @@
     <PackageId>SeedLib</PackageId>
     <Authors>Mitko0012</Authors>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <RootNamespace>Seed</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>
