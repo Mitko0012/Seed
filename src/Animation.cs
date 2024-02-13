@@ -34,25 +34,12 @@ namespace Seed
 
         void PlayAnimation()
         {
-            Stopwatch stopwatch = new Stopwatch();
             IsRunning = true;
-            stopwatch.Start();
             foreach(Image frame in this.frames)
             {
                 if(IsRunning)
                 {
-                    int i = GameLogic.FrameNumber;
-                    bool completedFrame = false;
-                    while(stopwatch.ElapsedMilliseconds < this.WaitTimes[Array.IndexOf(frames, frame)])
-                    {
-                        if (GameLogic.FrameNumber > i && !completedFrame)
-                        {
-                            sprite.Texture = frames[Array.IndexOf(frames, frame)];
-                            completedFrame = true;
-                        }
-                    }
-                    stopwatch.Restart();
-                    completedFrame = false;
+                    sprite.Texture = frames[Array.IndexOf(frames, frame)];
                 }
                 else
                 {
