@@ -18,7 +18,7 @@ namespace Seed
             Width = width;
             Color = color;
         }
-        protected override void SpecificDraw()
+        protected override void Draw()
         {
             Pen pen = new Pen(Color, Width);
             GameLogic.G.DrawLine(pen, PosX, PosY, EndPosX, EndPosY);
