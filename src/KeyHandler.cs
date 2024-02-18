@@ -20,12 +20,12 @@ namespace Seed
                 }
             }
         }
-        public static void KeyDown(object sender, KeyEventArgs e)
+        public static void KeyDown(object? sender, KeyEventArgs e)
         {
             KeysDown[Convert.ToString(e.KeyCode)] = true;            
         }    
 
-        public static void KeyUp(object sender, KeyEventArgs e)
+        public static void KeyUp(object? sender, KeyEventArgs e)
         {
             KeysDown[Convert.ToString(e.KeyCode)] = false;
         }
