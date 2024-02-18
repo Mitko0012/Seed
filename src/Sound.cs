@@ -12,10 +12,20 @@ namespace Seed
         public bool IsPlaying {get; private set;}
         string path;
         public bool Looping {get; set;}
+        public float Volume {get; private set;}
+        
+        public void SetVolume(float vol)
+        {
+            if(vol > 0 && vol < 1)
+            {
+                outputDevice.Volume = vol;
+                Volume = vol;
+            }
+        }
         public Sound(string path, float volume, bool looping)
         {
             this.path = path;
-            outputDevice.Volume = volume;
+            SetVolume(volume);
             this.Looping = looping;
         }
 
