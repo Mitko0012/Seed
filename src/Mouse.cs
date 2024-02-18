@@ -11,13 +11,13 @@ namespace Seed
         public static bool RightDown{get; private set;}
         public static bool MiddleDown{get; private set;}
 
-        public static void GetMousePos(object sender, MouseEventArgs e)
+        public static void GetMousePos(object? sender, MouseEventArgs e)
         {
             MouseX = e.X;
             MouseY = e.Y;
         }
 
-        public static void OnMouseDown(object sender, MouseEventArgs e)
+        public static void OnMouseDown(object? sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
             {
@@ -33,7 +33,7 @@ namespace Seed
             }
         }
 
-        public static void OnMouseUp(object sender, MouseEventArgs e)
+        public static void OnMouseUp(object? sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
             {
