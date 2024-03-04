@@ -55,7 +55,6 @@ namespace Seed
         {
             scripts.Add(new WeakReference<GameLogic>(this));
             OnStart();
-            Thread.Sleep(5);
         }
 
         static GameLogic()
@@ -102,10 +101,10 @@ namespace Seed
                 G = e.Graphics;
                 foreach(WeakReference<GameLogic> script in scripts)
                 {
-                        if(script.TryGetTarget(out GameLogic target))
-                        {
-                            target.OnDraw();
-                        }
+                    if(script.TryGetTarget(out GameLogic target))
+                    {
+                        target.OnDraw();
+                    }
                 }
         }
         public static void SetTitle(string title)
