@@ -80,8 +80,10 @@ namespace Seed
                 timeAtLastFrameMillis = timeNowMillis;
                 foreach(WeakReference<GameLogic> script in scripts)
                 {
-                    script.TryGetTarget(out GameLogic? target);
-                    target.OnUpdate();
+                    if(script.TryGetTarget(out GameLogic target))
+                    {
+                        target.OnUpdate();
+                    }
                 }
                 Window.Invalidate();
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -100,8 +102,10 @@ namespace Seed
                 G = e.Graphics;
                 foreach(WeakReference<GameLogic> script in scripts)
                 {
-                    script.TryGetTarget(out GameLogic target);
-                    target.OnDraw();
+                        if(script.TryGetTarget(out GameLogic target))
+                        {
+                            target.OnDraw();
+                        }
                 }
         }
         public static void SetTitle(string title)
