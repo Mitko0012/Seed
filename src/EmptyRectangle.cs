@@ -18,7 +18,7 @@ namespace Seed
             RectangleWidth = rectangleWidth;
         }
 
-        protected override void Draw()
+        public override void Draw()
         {
             GraphicsState state = GameLogic.G.Save();
             Pen pen = new Pen(Color, RectangleWidth);
