@@ -40,6 +40,7 @@ namespace Seed
                 if(IsRunning)
                 {
                     sprite.Texture = frames[Array.IndexOf(frames, frame)];
+                    Thread.Sleep(WaitTimes[Array.IndexOf(frames, frame)]);
                 }
                 else
                 {
