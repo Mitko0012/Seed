@@ -60,9 +60,9 @@ namespace Seed
         static GameLogic()
         {
             Thread startWindow = new Thread(() => Window.ShowDialog());
-            isRunning = true;
             startWindow.Start();
             Thread callUpdate = new Thread(() => CallUpdate());
+            isRunning = true;
             callUpdate.Start();
         }
 
