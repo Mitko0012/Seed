@@ -58,7 +58,6 @@ namespace Seed
                 throw new Exception("New GameLogic scripts cannot be created after the game loop has been started");
             }
             scripts.Add(new WeakReference<GameLogic>(this));
-            OnStart();
         }
 
         public static void StartGameLoop()
