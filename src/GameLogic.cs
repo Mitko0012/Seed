@@ -53,12 +53,20 @@ namespace Seed
         public abstract void OnDraw();
         public GameLogic()
         {
+            if(isRunning)
+            {
+                throw new Exception("New GameLogic scripts cannot be created after the game loop has been started");
+            }
             scripts.Add(new WeakReference<GameLogic>(this));
             OnStart();
         }
 
-        static GameLogic()
+        public static void StartGameLoop()
         {
+            if(isRunning)
+            {
+                throw new Exception("Game loop can only be started once");
+            }
             Thread startWindow = new Thread(() => Window.ShowDialog());
             startWindow.Start();
             Thread callUpdate = new Thread(() => CallUpdate());
@@ -69,6 +77,13 @@ namespace Seed
         public static void CallUpdate()
         {
             Thread.Sleep(3);
+            foreach(WeakReference<GameLogic> script in scripts)
+                {
+                    if(script.TryGetTarget(out GameLogic target))
+                    {
+                        target.OnStart();
+                    }
+                }
             long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             while(true)
             {
