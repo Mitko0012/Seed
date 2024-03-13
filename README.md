@@ -57,6 +57,7 @@ namespace Test
         static void Main(string[] args)
         {
             Program prog = new Program();
+            GameLogic.StartGameLoop();
         }
     }
 }
