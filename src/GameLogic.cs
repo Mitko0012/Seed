@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Runtime.InteropServices.Marshalling;
 using System.Security.Policy;
 using System.Text.Encodings.Web;
@@ -11,21 +12,45 @@ using Seed;
 
 namespace Seed
 {
+    /// <summary>
+    /// The main class from which all Seed scripts derive.
+    /// </summary>
     public abstract class GameLogic
     {
-        private static GameWindow Window = new GameWindow(1300, 800);
-        public static Graphics G {get; private set;}
+        static Color backgroundColor = Color.White;
+        private static GameWindow window = new GameWindow(1300, 800);
+        static Bitmap secondBuffer = new Bitmap(window.Width, window.Height);
+        /// <summary>
+        /// Object of type <c>Graphics</c> that is used to draw elements on the game window.
+        /// </summary>
+        public static Graphics G = Graphics.FromImage(secondBuffer);
+        static Graphics? gWindow;
         static int desiredFps = 60;
         static bool isRunning = false;
-        static List<WeakReference<GameLogic>> scripts = new List<WeakReference<GameLogic>>();
+        static List<GameLogic> scripts = new List<GameLogic>();
+        /// <summary>
+        /// The count of the frames that have been sucessfully rendered. The value of it is 0 at the start. It increases by 1 with each sucessfully rendered frame.
+        /// </summary>
         public static int FrameNumber {get; private set;} = 0;
-        public static int Width {get; private set;} = Window.Width;
-        public static int Height {get; private set;} = Window.Height;
+        /// <summary>
+        /// The width of the game window. 1300 by default.
+        /// </summary>
+        public static int Width {get; private set;} = window.Width;
+        /// <summary>
+        /// The height of the game window. 800 by default.
+        /// </summary>
+        public static int Height {get; private set;} = window.Height;
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         static IntPtr taskBarHandle = FindWindow("Shell_TrayWnd", "");
         [DllImport("user32.dll")]
         private static extern IntPtr FindWindow(string className, string windowText);
+        /// <summary>
+        /// The desired FPS of the game. 60 by default.
+        /// </summary>
+        /// <exception cref="InvalidDataException">
+        /// Thrown when the value is attempted to be set to 0 or less.
+        /// </exception>
         public static int DesiredFps 
         {
             get
@@ -45,60 +70,81 @@ namespace Seed
             }
         }
 
+        /// <summary>
+        /// The actual FPS of the game.
+        /// </summary>
         public static int Fps {get; private set;}
+        /// <summary>
+        /// The time between the current and last frame.
+        /// </summary>
         static public double DeltaTime {get; private set;}
         
+        /// <summary>
+        /// Called when the game loop starts. It has to be overriden. It can be used to provide code to be executed when the game loop is started.
+        /// </summary>
         public abstract void OnStart();
+        /// <summary>
+        /// Called each frame. It has to be overriden. It can be used to provide code to be executed each frame.
+        /// </summary>
         public abstract void OnUpdate();
-        public abstract void OnDraw();
+        /// <summary>
+        /// Creates a new instance of the GameLogic class.
+        /// </summary>
+        /// <exception cref="Exception">Thrown if a GameLogic object gets created after the game loop is started.</exception>
         public GameLogic()
         {
             if(isRunning)
             {
                 throw new Exception("New GameLogic scripts cannot be created after the game loop has been started");
             }
-            scripts.Add(new WeakReference<GameLogic>(this));
+            scripts.Add(this);
         }
 
+        /// <summary>
+        /// Starts the game loop and opens the game window.
+        /// </summary>
+        /// <exception cref="Exception">Thrown if the method is called more than once.</exception>
         public static void StartGameLoop()
         {
             if(isRunning)
             {
                 throw new Exception("Game loop can only be started once");
             }
-            Thread startWindow = new Thread(() => Window.ShowDialog());
+            Thread startWindow = new Thread(() => Application.Run(window));
             startWindow.Start();
-            Thread callUpdate = new Thread(() => CallUpdate());
             isRunning = true;
-            callUpdate.Start();
+            CallUpdate();
         }
 
-        public static void CallUpdate()
+        static void CallUpdate()
         {
             Thread.Sleep(3);
-            foreach(WeakReference<GameLogic> script in scripts)
-                {
-                    if(script.TryGetTarget(out GameLogic target))
-                    {
-                        target.OnStart();
-                    }
-                }
+            gWindow = window.Invoke(() => window.CreateGraphics());
+            foreach(GameLogic script in scripts)
+            {
+                script.OnStart();
+            }
             long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             while(true)
             {
-                Width = Window.Width;
-                Height = Window.Height;
+                Brush brush = new SolidBrush(backgroundColor);
+                Width = window.Width;
+                Height = window.Height;
+                if(secondBuffer.Size != window.Size)
+                {
+                    secondBuffer = new Bitmap(window.Width, window.Height);
+                    G = Graphics.FromImage(secondBuffer);
+                    gWindow = window.Invoke(() => window.CreateGraphics());
+                }
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
                 timeAtLastFrameMillis = timeNowMillis;
-                foreach(WeakReference<GameLogic> script in scripts)
+                G.FillRectangle(brush, 0, 0, Width, Height);
+                foreach(GameLogic script in scripts)
                 {
-                    if(script.TryGetTarget(out GameLogic target))
-                    {
-                        target.OnUpdate();
-                    }
+                    script.OnUpdate();
                 }
-                Window.Invalidate();
+                gWindow.DrawImage(secondBuffer, Point.Empty);
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 long timeItTook = endTime - timeAtLastFrameMillis;
                 long waitTime = 1000/DesiredFps - timeItTook;
@@ -110,52 +156,58 @@ namespace Seed
                 Fps = Convert.ToInt32(1f/DeltaTime);
             }
         }
-        public static void Paint(object? sender, PaintEventArgs e)
-        {
-                G = e.Graphics;
-                foreach(WeakReference<GameLogic> script in scripts)
-                {
-                    if(script.TryGetTarget(out GameLogic target))
-                    {
-                        target.OnDraw();
-                    }
-                }
-        }
+        /// <summary>
+        /// Sets the title of the game window.
+        /// </summary>
+        /// <param name="title">The text that gets set as the title of the game window.</param>
         public static void SetTitle(string title)
         {
             if(isRunning)
             {
-                Window.Invoke(() => Window.Text = title);
+                window.Invoke(() => window.Text = title);
             }
             else
             {
-                Window.Text = title;
+                window.Text = title;
             }
         }
-        public static void SetSize(int height, int width)
+        /// <summary>
+        /// Sets the height and width of the game window.
+        /// </summary>
+        /// <param name="height">A value in pixels that gets set as the height of the game window.</param>
+        /// <param name="width">A value in pixels that gets set as the width of the game window.</param>
+        public static void SetSize(int width, int height)
         {
             if(isRunning)
             {
-                Window.Invoke(() => Window.Height = height);
-                Window.Invoke(() => Window.Width = width);
+                window.Invoke(() => window.Height = height);
+                window.Invoke(() => window.Width = width);
             }
             else
             {
-                Window.Height = height;
-                Window.Width = width;
+                window.Height = height;
+                window.Width = width;
             }
         }
+        /// <summary>
+        /// Sets the icon of the game winodw.
+        /// </summary>
+        /// <param name="icon">The icon that gets set as the game window's icon.</param>
         public static void SetIcon(Icon icon)
         {
             if(isRunning)
             {
-                Window.Invoke(() => Window.Icon = icon);
+                window.Invoke(() => window.Icon = icon);
             }
             else
             {
-                Window.Icon = icon;
+                window.Icon = icon;
             }
         }
+        /// <summary>
+        /// Enables or disables the game window's resizing.
+        /// </summary>
+        /// <param name="value">Defines whether the window should be able to be resized or not.</param>
         public static void SetLocked(bool value)
         {    
             switch (value)
@@ -163,25 +215,29 @@ namespace Seed
                 case true:
                 if(isRunning)
                 {
-                    Window.Invoke(() => Window.FormBorderStyle = FormBorderStyle.FixedDialog);
+                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.FixedDialog);
                 }
                 else
                 {
-                    Window.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    window.FormBorderStyle = FormBorderStyle.FixedDialog;
                 }
                 break;
                 case false:
                 if(isRunning)
                 {
-                    Window.Invoke(() => Window.FormBorderStyle = FormBorderStyle.Sizable);
+                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.Sizable);
                 }
                 else
                 {
-                    Window.FormBorderStyle = FormBorderStyle.Sizable;
+                    window.FormBorderStyle = FormBorderStyle.Sizable;
                 }
                 break;
             }
         }
+        /// <summary>
+        /// Sets the game window's size mode to windowed or full screen.
+        /// </summary>
+        /// <param name="value">Describes the size mode the game window is to be set. True if full screen, false if windowed.</param>
         public static void SetFullScreen(bool value)
         {
             nint hwnd = FindWindow("Shell_TrayWnd", "");
@@ -190,15 +246,15 @@ namespace Seed
                 case true:
                 if(isRunning)
                 {
-                    Window.Invoke(() => Window.WindowState = FormWindowState.Maximized);
+                    window.Invoke(() => window.WindowState = FormWindowState.Maximized);
                     SetLocked(true);
-                    Window.Invoke(() => Window.FormBorderStyle = FormBorderStyle.None); 
+                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.None); 
                 }
                 else 
                 {
-                    Window.WindowState = FormWindowState.Maximized;
+                    window.WindowState = FormWindowState.Maximized;
                     SetLocked(true);
-                    Window.FormBorderStyle = FormBorderStyle.None;
+                    window.FormBorderStyle = FormBorderStyle.None;
                 }
                 ShowWindow(hwnd, 0);
                 break;
@@ -206,12 +262,12 @@ namespace Seed
                     ShowWindow(taskBarHandle, 5);
                     if(isRunning)
                     {
-                        Window.Invoke(() => Window.WindowState = FormWindowState.Normal);
+                        window.Invoke(() => window.WindowState = FormWindowState.Normal);
                         SetLocked(false);
                     }
                     else 
                     {
-                        Window.WindowState = FormWindowState.Normal;
+                        window.WindowState = FormWindowState.Normal;
                         SetLocked(false);
                     }
                     ShowWindow(hwnd, 1);
@@ -219,15 +275,46 @@ namespace Seed
             }
             
         }
+        /// <summary>
+        /// Sets the background color of the game window.
+        /// </summary>
+        /// <param name="color">The color which the window's background color is to be set to.</param>
         public static void SetColor(Color color)
         {
-            if(isRunning)
+            backgroundColor = color;
+        }
+
+        private class GameWindow : Form
+        {  
+            [DllImport("user32.dll")]
+            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+            static IntPtr taskBarHandle;
+            [DllImport("user32.dll")]
+            private static extern IntPtr FindWindow(string className, string windowText);
+            public GameWindow(int width, int height)
             {
-                Window.Invoke(() => Window.BackColor = color);
+                taskBarHandle = FindWindow("Shell_TrayWnd", "");
+                Height = height;
+                Width = width;
+                this.SizeGripStyle = SizeGripStyle.Hide;
+                this.Text = "Seed Game";
+                this.KeyDown += KeyHandler.KeyDown;
+                this.KeyUp += KeyHandler.KeyUp;
+                this.MouseMove += Mouse.GetMousePos;
+                this.MouseDown += Mouse.OnMouseDown;
+                this.MouseUp += Mouse.OnMouseUp;
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                Stream? imageStream = assembly.GetManifestResourceStream("Seed.Icons.Icon.ico");
+                if (imageStream != null)
+                {
+                    this.Icon = new Icon(imageStream);
+                }
+                this.FormClosing += new FormClosingEventHandler(GameWindow.Close); 
             }
-            else
+            static void Close(object? sender, FormClosingEventArgs e)
             {
-                Window.BackColor = color;
+                ShowWindow(taskBarHandle, 1);
+                Environment.Exit(0);
             }
         }
     }
