@@ -18,7 +18,7 @@ namespace Seed
     public abstract class GameLogic
     {
         static Color backgroundColor = Color.White;
-        private static GameWindow window = new GameWindow(1300, 800);
+        private static GameWindow window = new GameWindow(800, 600);
         static Bitmap secondBuffer = new Bitmap(window.Width, window.Height);
         /// <summary>
         /// Object of type <c>Graphics</c> that is used to draw elements on the game window.
@@ -27,6 +27,7 @@ namespace Seed
         static Graphics? gWindow;
         static int desiredFps = 60;
         static bool isRunning = false;
+        static Rectangle screenRectangle;
         static List<GameLogic> scripts = new List<GameLogic>();
         /// <summary>
         /// The count of the frames that have been sucessfully rendered. The value of it is 0 at the start. It increases by 1 with each sucessfully rendered frame.
@@ -39,7 +40,7 @@ namespace Seed
         /// <summary>
         /// The height of the game window. 800 by default.
         /// </summary>
-        public static int Height {get; private set;} = window.Height;
+        public static int Height {get; private set;} = window.Height - (screenRectangle.Top - window.Top) - 8;
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         static IntPtr taskBarHandle = FindWindow("Shell_TrayWnd", "");
@@ -86,7 +87,7 @@ namespace Seed
         /// <summary>
         /// Called each frame. It has to be overriden. It can be used to provide code to be executed each frame.
         /// </summary>
-        public abstract void OnUpdate();
+        public abstract void OnFrame();
         /// <summary>
         /// Creates a new instance of the GameLogic class.
         /// </summary>
@@ -127,9 +128,10 @@ namespace Seed
             long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             while(true)
             {
+                screenRectangle = window.Invoke(() => window.RectangleToScreen(window.ClientRectangle));
                 Brush brush = new SolidBrush(backgroundColor);
                 Width = window.Width;
-                Height = window.Height;
+                Height = window.Height - (screenRectangle.Top - window.Top) - 8;
                 if(secondBuffer.Size != window.Size)
                 {
                     secondBuffer = new Bitmap(window.Width, window.Height);
@@ -142,7 +144,7 @@ namespace Seed
                 G.FillRectangle(brush, 0, 0, Width, Height);
                 foreach(GameLogic script in scripts)
                 {
-                    script.OnUpdate();
+                    script.OnFrame();
                 }
                 gWindow.DrawImage(secondBuffer, Point.Empty);
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -215,21 +217,25 @@ namespace Seed
                 case true:
                 if(isRunning)
                 {
-                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.FixedDialog);
+                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.FixedSingle);
+                    window.Invoke(() => window.MaximizeBox = false);
                 }
                 else
                 {
-                    window.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    window.FormBorderStyle = FormBorderStyle.FixedSingle;
+                    window.MaximizeBox = false;
                 }
                 break;
                 case false:
                 if(isRunning)
                 {
                     window.Invoke(() => window.FormBorderStyle = FormBorderStyle.Sizable);
+                    window.Invoke(() => window.MaximizeBox = true);
                 }
                 else
                 {
                     window.FormBorderStyle = FormBorderStyle.Sizable;
+                    window.MaximizeBox = true;
                 }
                 break;
             }
