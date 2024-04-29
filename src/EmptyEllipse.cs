@@ -41,11 +41,11 @@ namespace Seed
         public override void Draw()
         {
             GraphicsState state = GameLogic.G.Save();
-            Pen pen = new Pen(Color, OvalWidth);
-            GameLogic.G.TranslateTransform(this.PosX + RotationCenterX, this.PosY + RotationCenterY);
-            GameLogic.G.RotateTransform(Angle);
-            GameLogic.G.TranslateTransform(-(this.PosX + RotationCenterX), -(this.PosY + RotationCenterY));
-            GameLogic.G.DrawEllipse(pen, PosX, PosY, Width, Height);
+            Pen pen = new Pen(Color, Convert(OvalWidth, false, false));
+            GameLogic.G.TranslateTransform((float)this.PosX + (float)RotationCenterX, (float)this.PosY + (float)RotationCenterY);
+            GameLogic.G.RotateTransform((float)Angle);
+            GameLogic.G.TranslateTransform(-((float)this.PosX + (float)RotationCenterX), -((float)this.PosY + (float)RotationCenterY));
+            GameLogic.G.DrawEllipse(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
             GameLogic.G.Restore(state);
             pen.Dispose();
         }

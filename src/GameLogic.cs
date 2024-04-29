@@ -33,6 +33,8 @@ namespace Seed
         /// The count of the frames that have been sucessfully rendered. The value of it is 0 at the start. It increases by 1 with each sucessfully rendered frame.
         /// </summary>
         public static int FrameNumber {get; private set;} = 0;
+
+        public static double UnitsOnCanvas = 100;
         /// <summary>
         /// The width of the game window. 1300 by default.
         /// </summary>

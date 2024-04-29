@@ -11,11 +11,11 @@ namespace Seed
         /// <summary>
         /// The X position of the mouse.
         /// </summary>
-        public static int MouseX{get; private set;}
+        public static double PosX{get; private set;}
         /// <summary>
         /// The Y position of the mouse.
         /// </summary>
-        public static int MouseY{get; private set;}
+        public static double PosY{get; private set;}
         /// <summary>
         /// Shows if the left mouse button is down.
         /// </summary>
@@ -36,8 +36,9 @@ namespace Seed
         /// <param name="e">The event arguments.</param>
         public static void GetMousePos(object? sender, MouseEventArgs e)
         {
-            MouseX = e.X;
-            MouseY = e.Y;
+            double unit = (Math.Min(GameLogic.Width, GameLogic.Height) / GameLogic.UnitsOnCanvas);
+            PosX = e.X / unit - (((Camera.PosX * -1) + GameLogic.Width / 2 ) / unit);
+            PosY = e.Y / unit - (((Camera.PosY * -1) + GameLogic.Height / 2 ) / unit);
         }
 
         /// <summary>

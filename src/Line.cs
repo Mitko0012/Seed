@@ -49,7 +49,7 @@ namespace Seed
         public override void Draw()
         {
             Pen pen = new Pen(Color, Width);
-            GameLogic.G.DrawLine(pen, PosX, PosY, EndPosX, EndPosY);
+            GameLogic.G.DrawLine(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(PosX, true, true), Convert(PosY, true, false));
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq.Expressions;
 
 namespace Seed
 {
@@ -16,7 +17,7 @@ namespace Seed
         /// <summary>
         /// The font of the text.
         /// </summary>
-        public Font Font;
+        Font font;
         /// <summary>
         /// The string format of the text.
         /// </summary>
@@ -25,6 +26,10 @@ namespace Seed
         /// The content of the text.
         /// </summary>
         public string DisplayText;
+        
+        public string Font;
+        public double Size;
+        
         /// <summary>
         /// Creates a new instance of the Text class.
         /// </summary>
@@ -32,11 +37,12 @@ namespace Seed
         /// <param name="posY">Value to be set as the Y position.</param>
         /// <param name="font">Value to be set as the font.</param>
         /// <param name="text">Value to be set as the display text.</param>
-        public Text(int posX, int posY, Font font, string text)
+        public Text(int posX, int posY, string font, double size, string text)
         {
             PosX = posX;
             PosY = posY;
             Font = font;
+            Size = size;
             DisplayText = text;
         }
 
@@ -45,8 +51,9 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
+            font = new Font(Font, Convert(Size, false, false));
             Brush brush = new SolidBrush(Color);
-            GameLogic.G.DrawString(DisplayText, Font, brush, PosX, PosY , Format);
+            GameLogic.G.DrawString(DisplayText, font, brush, Convert(PosX, true, true), Convert(PosY, true, false), Format);
             brush.Dispose();
         }
     }
