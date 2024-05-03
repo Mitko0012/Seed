@@ -9,6 +9,7 @@ using System.Text.Encodings.Web;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.ApplicationServices;
 using Seed;
+using NAudio.Dmo;
 
 namespace Seed
 {
@@ -43,11 +44,9 @@ namespace Seed
         /// The height of the game window. 800 by default.
         /// </summary>
         public static int Height {get; private set;} = window.Height - (screenRectangle.Top - window.Top) - 8;
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        static IntPtr taskBarHandle = FindWindow("Shell_TrayWnd", "");
-        [DllImport("user32.dll")]
-        private static extern IntPtr FindWindow(string className, string windowText);
+        
+        static private bool isFullScreen = false;
+
         /// <summary>
         /// The desired FPS of the game. 60 by default.
         /// </summary>
@@ -133,7 +132,7 @@ namespace Seed
                 screenRectangle = window.Invoke(() => window.RectangleToScreen(window.ClientRectangle));
                 Brush brush = new SolidBrush(backgroundColor);
                 Width = window.Width;
-                Height = window.Height - (screenRectangle.Top - window.Top) - 8;
+                Height = window.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0? 0 : 8);
                 if(secondBuffer.Size != window.Size)
                 {
                     secondBuffer = new Bitmap(window.Width, window.Height);
@@ -214,32 +213,35 @@ namespace Seed
         /// <param name="value">Defines whether the window should be able to be resized or not.</param>
         public static void SetLocked(bool value)
         {    
-            switch (value)
-            {
-                case true:
-                if(isRunning)
+            if(!isFullScreen)
+            {                
+                switch (value)
                 {
-                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.FixedSingle);
-                    window.Invoke(() => window.MaximizeBox = false);
-                }
-                else
-                {
-                    window.FormBorderStyle = FormBorderStyle.FixedSingle;
-                    window.MaximizeBox = false;
-                }
-                break;
-                case false:
-                if(isRunning)
-                {
-                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.Sizable);
-                    window.Invoke(() => window.MaximizeBox = true);
-                }
-                else
-                {
-                    window.FormBorderStyle = FormBorderStyle.Sizable;
-                    window.MaximizeBox = true;
-                }
-                break;
+                    case true:
+                    if(isRunning)
+                    {
+                        window.Invoke(() => window.FormBorderStyle = FormBorderStyle.FixedSingle);
+                        window.Invoke(() => window.MaximizeBox = false);
+                    }
+                    else
+                    {
+                        window.FormBorderStyle = FormBorderStyle.FixedSingle;
+                        window.MaximizeBox = false;
+                    }
+                    break;
+                    case false:
+                    if(isRunning)
+                    {
+                        window.Invoke(() => window.FormBorderStyle = FormBorderStyle.Sizable);
+                        window.Invoke(() => window.MaximizeBox = true);
+                    }
+                    else
+                    {
+                        window.FormBorderStyle = FormBorderStyle.Sizable;
+                        window.MaximizeBox = true;
+                    }
+                    break;
+                } 
             }
         }
         /// <summary>
@@ -248,26 +250,24 @@ namespace Seed
         /// <param name="value">Describes the size mode the game window is to be set. True if full screen, false if windowed.</param>
         public static void SetFullScreen(bool value)
         {
-            nint hwnd = FindWindow("Shell_TrayWnd", "");
             switch(value)
             {
                 case true:
-                if(isRunning)
-                {
-                    window.Invoke(() => window.WindowState = FormWindowState.Maximized);
                     SetLocked(true);
-                    window.Invoke(() => window.FormBorderStyle = FormBorderStyle.None); 
-                }
-                else 
-                {
-                    window.WindowState = FormWindowState.Maximized;
-                    SetLocked(true);
-                    window.FormBorderStyle = FormBorderStyle.None;
-                }
-                ShowWindow(hwnd, 0);
-                break;
+                    isFullScreen = true;
+                    if(isRunning)
+                    {
+                        window.Invoke(() => window.WindowState = FormWindowState.Maximized);
+                        window.Invoke(() => window.FormBorderStyle = FormBorderStyle.None);
+                    }
+                    else 
+                    {
+                        window.WindowState = FormWindowState.Maximized;
+                        window.FormBorderStyle = FormBorderStyle.None;
+                    }
+                    break;
                 case false:
-                    ShowWindow(taskBarHandle, 5);
+                    isFullScreen = false;
                     if(isRunning)
                     {
                         window.Invoke(() => window.WindowState = FormWindowState.Normal);
@@ -278,7 +278,6 @@ namespace Seed
                         window.WindowState = FormWindowState.Normal;
                         SetLocked(false);
                     }
-                    ShowWindow(hwnd, 1);
                     break;
             }
             
@@ -292,16 +291,16 @@ namespace Seed
             backgroundColor = color;
         }
 
+        public static void Exit()
+        {
+            Application.Exit();
+        }
+
         private class GameWindow : Form
         {  
-            [DllImport("user32.dll")]
-            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-            static IntPtr taskBarHandle;
-            [DllImport("user32.dll")]
             private static extern IntPtr FindWindow(string className, string windowText);
             public GameWindow(int width, int height)
             {
-                taskBarHandle = FindWindow("Shell_TrayWnd", "");
                 Height = height;
                 Width = width;
                 this.SizeGripStyle = SizeGripStyle.Hide;
@@ -319,9 +318,10 @@ namespace Seed
                 }
                 this.FormClosing += new FormClosingEventHandler(GameWindow.Close); 
             }
+            
+
             static void Close(object? sender, FormClosingEventArgs e)
             {
-                ShowWindow(taskBarHandle, 1);
                 Environment.Exit(0);
             }
         }

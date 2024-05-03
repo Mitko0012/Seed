@@ -15,7 +15,7 @@ namespace Seed
         /// <summary>
         /// The image texture of the sprite.
         /// </summary>
-        public Image Texture {get; set;}    
+        public STexture Texture {get; set;}    
         /// <summary>
         /// Creates a new instance of the Sprite class.
         /// </summary>
@@ -24,7 +24,7 @@ namespace Seed
         /// <param name="sizeX">Value to be set as the width.</param>
         /// <param name="sizeY">Value to be set as the height.</param>
         /// <param name="texture">Value to be set as the image texture.</param>
-        public Sprite(int posX, int posY, int sizeX, int sizeY, Image texture)
+        public Sprite(int posX, int posY, int sizeX, int sizeY, STexture texture)
         {
             PosX = posX;
             PosY = posY;
@@ -42,7 +42,7 @@ namespace Seed
             GameLogic.G.TranslateTransform((float)this.PosX + (float)RotationCenterX, (float)this.PosY + (float)RotationCenterY);
             GameLogic.G.RotateTransform((float)Angle);
             GameLogic.G.TranslateTransform(-((float)this.PosX + (float)RotationCenterX), -((float)this.PosY + (float)RotationCenterY));
-            GameLogic.G.DrawImage(Texture, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
+            GameLogic.G.DrawImage(Texture.Image, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
             GameLogic.G.Restore(state);
         }
     }

@@ -15,7 +15,7 @@ namespace Seed
         /// Represents the time the animation should wait after each frame where the index of an item from this array is the index of the frame after which the waiting should be done. 
         /// </summary>
         public int[] WaitTimes {get; set;}
-        Image[] frames;
+        STexture[] frames;
         /// <summary>
         /// True if the animation is currently running, false if not.
         /// </summary>
@@ -32,13 +32,13 @@ namespace Seed
         /// <param name="waitTime">The time the animation should wait after each frame. If after certain frames more time should be waited, an item of the <c>WaitTimes</c> array can be changed.</param>
         /// <param name="isLooping">Whether the animation should loop after it finishes playing.</param>
         /// <param name="frames">The frames of the animation.</param>
-        public Animation(Sprite sprite, int waitTime, bool isLooping, params Image[] frames)
+        public Animation(Sprite sprite, int waitTime, bool isLooping, params STexture[] frames)
         {
             this.frames = frames;
             this.sprite = sprite;
             Looping = isLooping;
             List<int> waitTimes = new List<int>();
-            foreach(Image frame in frames)
+            foreach(STexture frame in frames)
             {
                 waitTimes.Add(waitTime);
             }
@@ -57,7 +57,7 @@ namespace Seed
         void PlayAnimation()
         {
             IsRunning = true;
-            foreach(Image frame in this.frames)
+            foreach(STexture frame in this.frames)
             {
                 if(IsRunning)
                 {
