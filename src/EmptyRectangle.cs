@@ -16,7 +16,7 @@ namespace Seed
         /// <summary>
         /// The width of the outline of the rectangle.
         /// </summary>
-        public float RectangleWidth;
+        public double RectangleWidth;
         
         /// <summary>
         /// Creates a new instance of the EmptyRectange class.
@@ -27,7 +27,7 @@ namespace Seed
         /// <param name="height">Value to be set as the height.</param>
         /// <param name="rectangleWidth">Value to be set as the outline width</param>
         /// <param name="color">Value to be set as the color.</param>
-        public EmptyRectangle(int posX, int posY, int width, int height, int rectangleWidth, Color color)
+        public EmptyRectangle(double posX, double posY, double width, double height, double rectangleWidth, Color color)
         {
             PosX = posX;
             PosY = posY;

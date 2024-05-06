@@ -14,7 +14,7 @@ public class STexture
         }
         else
         {
-            Image = ResourceLoader.LoadImg(texturePath);
+            Image = EmbdeddedResourceLoader.LoadImg(texturePath);
         }
     }
 

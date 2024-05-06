@@ -24,7 +24,7 @@ namespace Seed
         /// <param name="sizeX">Value to be set as the width.</param>
         /// <param name="sizeY">Value to be set as the height.</param>
         /// <param name="texture">Value to be set as the image texture.</param>
-        public Sprite(int posX, int posY, int sizeX, int sizeY, STexture texture)
+        public Sprite(double posX, double posY, double sizeX, double sizeY, STexture texture)
         {
             PosX = posX;
             PosY = posY;
@@ -39,9 +39,9 @@ namespace Seed
         public override void Draw()
         {
             GraphicsState state = GameLogic.G.Save();
-            GameLogic.G.TranslateTransform((float)this.PosX + (float)RotationCenterX, (float)this.PosY + (float)RotationCenterY);
+            GameLogic.G.TranslateTransform(Convert(PosX, true, true) + Convert(RotationCenterX, false, true), Convert(PosY, true, false) + Convert(RotationCenterY, false, true));
             GameLogic.G.RotateTransform((float)Angle);
-            GameLogic.G.TranslateTransform(-((float)this.PosX + (float)RotationCenterX), -((float)this.PosY + (float)RotationCenterY));
+            GameLogic.G.TranslateTransform(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)), -(Convert(PosY, true, false) + Convert(RotationCenterY, false, true)));
             GameLogic.G.DrawImage(Texture.Image, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
             GameLogic.G.Restore(state);
         }

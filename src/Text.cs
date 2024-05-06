@@ -21,7 +21,7 @@ namespace Seed
         /// <summary>
         /// The string format of the text.
         /// </summary>
-        public StringFormat Format = new StringFormat();
+        StringFormat format = new StringFormat();
         /// <summary>
         /// The content of the text.
         /// </summary>
@@ -29,6 +29,9 @@ namespace Seed
         
         public string Font;
         public double Size;
+
+        public HTextAlignment HorisontalAlignment = HTextAlignment.Left;
+        public VTextAlignment VerticalAlignment = VTextAlignment.Bottom;
         
         /// <summary>
         /// Creates a new instance of the Text class.
@@ -37,7 +40,7 @@ namespace Seed
         /// <param name="posY">Value to be set as the Y position.</param>
         /// <param name="font">Value to be set as the font.</param>
         /// <param name="text">Value to be set as the display text.</param>
-        public Text(int posX, int posY, string font, double size, string text)
+        public Text(double posX, double posY, double size, string font, string text)
         {
             PosX = posX;
             PosY = posY;
@@ -51,10 +54,26 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
+            format.Alignment = (StringAlignment)HorisontalAlignment;
+            format.LineAlignment = (StringAlignment)VerticalAlignment;
             font = new Font(Font, Convert(Size, false, false));
             Brush brush = new SolidBrush(Color);
-            GameLogic.G.DrawString(DisplayText, font, brush, Convert(PosX, true, true), Convert(PosY, true, false), Format);
+            GameLogic.G.DrawString(DisplayText, font, brush, Convert(PosX, true, true), Convert(PosY, true, false), format);
             brush.Dispose();
         }
+    }
+
+    public enum HTextAlignment
+    {
+        Left,
+        Center,
+        Right
+    }
+
+    public enum VTextAlignment
+    {
+        Bottom,
+        Center,
+        Top
     }
 }

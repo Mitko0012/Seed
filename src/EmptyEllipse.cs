@@ -12,7 +12,7 @@ namespace Seed
         /// <summary>
         /// The width of the outline of the ellipse.
         /// </summary>
-        public float OvalWidth;
+        public double OvalWidth;
         /// <summary>
         /// The color of the outline of the ellipse.
         /// </summary>
@@ -26,7 +26,7 @@ namespace Seed
         /// <param name="height">Value to be set as the height.</param>
         /// <param name="ellipseWidth">Value to be set as the outline width</param>
         /// <param name="color">Value to be set as the color.</param>
-        public EmptyEllipse(int posX, int posY, int height, int width, float ellipseWidth, Color color)
+        public EmptyEllipse(double posX, double posY, double height, double width, double ellipseWidth, Color color)
         {
             PosX = posX;
             PosY = posY;
@@ -42,9 +42,9 @@ namespace Seed
         {
             GraphicsState state = GameLogic.G.Save();
             Pen pen = new Pen(Color, Convert(OvalWidth, false, false));
-            GameLogic.G.TranslateTransform((float)this.PosX + (float)RotationCenterX, (float)this.PosY + (float)RotationCenterY);
+            GameLogic.G.TranslateTransform(Convert(PosX, true, true) + Convert(RotationCenterX, false, true), Convert(PosY, true, false) + Convert(RotationCenterY, false, true));
             GameLogic.G.RotateTransform((float)Angle);
-            GameLogic.G.TranslateTransform(-((float)this.PosX + (float)RotationCenterX), -((float)this.PosY + (float)RotationCenterY));
+            GameLogic.G.TranslateTransform(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)), -(Convert(PosY, true, false) + Convert(RotationCenterY, false, true)));
             GameLogic.G.DrawEllipse(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
             GameLogic.G.Restore(state);
             pen.Dispose();

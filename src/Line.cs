@@ -10,16 +10,16 @@ namespace Seed
         /// <summary>
         /// The X position of the end point of the line.
         /// </summary>
-        public int EndPosX;
+        public double EndPosX;
         
         /// <summary>
         /// The Y position of the end point of the line.
         /// </summary>
-        public int EndPosY;
+        public double EndPosY;
         /// <summary>
         /// The width of the line.
         /// </summary>
-        public float Width;
+        public double Width;
         /// <summary>
         /// The color of the line.
         /// </summary>
@@ -34,7 +34,7 @@ namespace Seed
         /// <param name="endPosY">Value to be set as the end Y position.</param>
         /// <param name="width">Value to be set as the width of the line.</param>
         /// <param name="color">Value to be set as the color.</param>
-        public Line(int posX, int posY, int endPosX, int endPosY, float width, Color color)
+        public Line(double posX, double posY, double endPosX, double endPosY, double width, Color color)
         {
             PosX = posX;
             PosY = posY;
@@ -48,8 +48,8 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            Pen pen = new Pen(Color, Width);
-            GameLogic.G.DrawLine(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(PosX, true, true), Convert(PosY, true, false));
+            Pen pen = new Pen(Color, Convert(Width, false, false));
+            GameLogic.G.DrawLine(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(EndPosX, true, true), Convert(EndPosY, true, false));
         }
     }
 }

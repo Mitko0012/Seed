@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 
@@ -29,12 +30,14 @@ namespace Seed
         /// The angle of rotation of the element. 0 by default.
         /// </summary>
         public double Angle = 0f;
+
+        public bool IsSticky = false;
         /// <summary>
         /// Draws the element on the game window. 
         /// </summary>
         public virtual void Draw(){}
 
-        public static int Convert(double value, bool pos, bool x)
+        public int Convert(double value, bool pos, bool x)
         {
             double unit = Math.Min(GameLogic.Width, GameLogic.Height) / GameLogic.UnitsOnCanvas;
             double camOffsetX = Camera.PosX * unit * -1 + (GameLogic.Width / 2);
@@ -42,11 +45,11 @@ namespace Seed
 
             if(x)
             {
-                return (int)(value * unit + (pos? camOffsetX : 0));
+                return (int)(value * unit + (pos? IsSticky? GameLogic.Width / 2: camOffsetX : 0));
             }
             else
             {
-                return (int)(value * unit + (pos? camOffsetY : 0));
+                return (int)(value * unit + (pos? IsSticky? GameLogic.Height / 2: camOffsetY : 0));
             }
         }
     }

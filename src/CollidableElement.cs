@@ -5,15 +5,31 @@ namespace Seed
     /// <summary>
     /// This class represents elements which can be collision checked without having to create the collider(it checks if the elements are directly touching).
     /// </summary>
+    /// 
     public class CollidableElement : Element
     {
         /// <summary>
         /// The width of the element in pixels.
         /// </summary>
-        public int Width;
+        
+        public double Width;
         /// <summary>
         /// The height of the element in pixels.
         /// </summary>
-        public int Height;
+        
+        public double Height;
+
+        /// <summary>
+        /// The X position of the center of rotation of the element in pixels. Relative to the PosX of the element. 0 by default.
+        /// </summary>
+        public double RotationCenterX = 0;
+        /// <summary>
+        /// The T position of the center of rotation of the element in pixels. Relative to the PosY of the element. 0 by default.
+        /// </summary>
+        public double RotationCenterY = 0;
+        /// <summary>
+        /// The angle of rotation of the element. 0 by default.
+        /// </summary>
+        public double Angle = 0f;
     }
 }
