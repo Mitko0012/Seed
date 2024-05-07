@@ -10,7 +10,7 @@ namespace Seed
     public class EmptyEllipse : CollidableElement
     {
         /// <summary>
-        /// The width of the outline of the ellipse.
+        /// The width of the outline of the ellipse in game units.
         /// </summary>
         public double OvalWidth;
         /// <summary>

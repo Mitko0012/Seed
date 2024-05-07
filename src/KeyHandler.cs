@@ -7,7 +7,7 @@ using Microsoft.VisualBasic.Devices;
 namespace Seed
 {
     /// <summary>
-    /// Checks if keyboard keys are down.
+    /// A class that represents keyboard input.
     /// </summary>
     public static class KeyHandler
     {

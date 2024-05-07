@@ -1,18 +1,27 @@
 namespace Seed;
 
+/// <summary>
+/// Represents a tile map element.
+/// </summary>
 public class Tilemap : Element
 {
-    public double PosX = 0;
-
-    public double PosY = 0;
-
+    /// <summary>
+    /// The tile map where each value corresponds to an index of an item in <c>GameLogic.TileTextures</c>
+    /// </summary>
     public List<List<int>> Map = new List<List<int>>();
     
+    /// <summary>
+    /// Creates an instance of the tilemap class.
+    /// </summary>
     public Tilemap()
     {
-
+        PosX = 0;
+        PosY = 0;
     }
 
+    /// <summary>
+    /// Draws the tile map on the screen.
+    /// </summary>
     public override void Draw()
     {
         double currX = PosX;

@@ -4,28 +4,28 @@ using System.Windows.Forms;
 namespace Seed
 {
     /// <summary>
-    /// This class checks data about the mouse.
+    /// A class that represents mouse input.
     /// </summary>
     public static class Mouse
     {
         /// <summary>
-        /// The X position of the mouse.
+        /// The X position of the mouse in game units.
         /// </summary>
         public static double PosX{get; private set;}
         /// <summary>
-        /// The Y position of the mouse.
+        /// The Y position of the mouse in game units.
         /// </summary>
         public static double PosY{get; private set;}
         /// <summary>
-        /// Shows if the left mouse button is down.
+        /// True if the left mouse button is down, otherwise false.
         /// </summary>
         public static bool LeftDown{get; private set;}
         /// <summary>
-        /// Shows if the right mouse button is down.
+        /// True if the right mouse button is down, otherwise false.
         /// </summary>
         public static bool RightDown{get; private set;}
         /// <summary>
-        /// Shows if the middle mouse button is down.
+        /// True if the middle mouse button is down, otherwise false.
         /// </summary>
         public static bool MiddleDown{get; private set;}
 

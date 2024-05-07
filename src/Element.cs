@@ -19,13 +19,22 @@ namespace Seed
         /// </summary>
         public double PosY;
         
-
+        /// <summary>
+        /// True if the element should be sticky(independent on the camera positionm), false if not.
+        /// </summary>
         public bool IsSticky = false;
         /// <summary>
         /// Draws the element on the game window. 
         /// </summary>
         public virtual void Draw(){}
 
+        /// <summary>
+        /// Converts a value from game units to pixels. Used for drawing the elements.
+        /// </summary>
+        /// <param name="value">The value to be converted.</param>
+        /// <param name="pos">True if the value represents a position, false if it represents a scale.</param>
+        /// <param name="x">True if the value represents a position on the X axis, false if it represents one on the Y axis.</param>
+        /// <returns>The value in pixels.</returns>
         protected int Convert(double value, bool pos, bool x)
         {
             double unit = Math.Min(GameLogic.Width, GameLogic.Height) / GameLogic.UnitsOnCanvas;

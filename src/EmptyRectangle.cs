@@ -14,7 +14,7 @@ namespace Seed
         /// </summary>
         public Color Color;
         /// <summary>
-        /// The width of the outline of the rectangle.
+        /// The width of the outline of the rectangle in game units.
         /// </summary>
         public double RectangleWidth;
         

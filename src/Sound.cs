@@ -7,18 +7,18 @@ using NAudio.Wave;
 namespace Seed
 {
     /// <summary>
-    /// Class that represents a sound.
+    /// A class that represents a sound.
     /// </summary>
     public class Sound
     {
         WaveOutEvent outputDevice = new WaveOutEvent();
         /// <summary>
-        /// Shows if the sound is playing.
+        /// True if the sound is playing, otherwise false.
         /// </summary>
         public bool IsPlaying {get; private set;}
         string path;
         /// <summary>
-        /// Shows if the sound should loop after it finishes.
+        /// True if the sound should loop after it finishes, otherwise false.
         /// </summary>
         public bool Looping {get; set;}
         /// <summary>
@@ -29,7 +29,7 @@ namespace Seed
         /// <summary>
         /// Sets the volume of the sound.
         /// </summary>
-        /// <param name="vol">The value which should be set as the volume of the sound. A float between 0 and 1.</param>
+        /// <param name="vol">The value to be set as the volume of the sound. A float between 0 and 1.</param>
         public void SetVolume(float vol)
         {
             if(vol > 0 && vol < 1)
@@ -43,7 +43,7 @@ namespace Seed
         /// </summary>
         /// <param name="path">The filepath of the sound file.</param>
         /// <param name="volume">The volume of the sound. A float between 0 and 1.</param>
-        /// <param name="looping">Value that shows whether the sound should loop.</param>
+        /// <param name="looping">True if the sound should loop, otherwise false.</param>
         public Sound(string path, float volume, bool looping)
         {
             this.path = path;

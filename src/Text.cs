@@ -27,10 +27,22 @@ namespace Seed
         /// </summary>
         public string DisplayText;
         
-        public string Font;
+        /// <summary>
+        /// The font of the text. Arial by default.
+        /// </summary>
+        public string Font = "Arial";
+        /// <summary>
+        /// The size of the text in game units.
+        /// </summary>
         public double Size;
 
+        /// <summary>
+        /// The horizontal alignment of the text. Left by default.
+        /// </summary>
         public HTextAlignment HorisontalAlignment = HTextAlignment.Left;
+        /// <summary>
+        /// The vertical aligment of the text. Bottom by default.
+        /// </summary>
         public VTextAlignment VerticalAlignment = VTextAlignment.Bottom;
         
         /// <summary>
@@ -38,6 +50,7 @@ namespace Seed
         /// </summary>
         /// <param name="posX">Value to be set as the X position.</param>
         /// <param name="posY">Value to be set as the Y position.</param>
+        /// <param name="size">Value to be set as the size </param>
         /// <param name="font">Value to be set as the font.</param>
         /// <param name="text">Value to be set as the display text.</param>
         public Text(double posX, double posY, double size, string font, string text)
@@ -47,6 +60,7 @@ namespace Seed
             Font = font;
             Size = size;
             DisplayText = text;
+            this.font = new Font(Font, Convert(Size, false, false));
         }
 
         /// <summary>
@@ -63,17 +77,41 @@ namespace Seed
         }
     }
 
+    /// <summary>
+    /// Represents horizontal text alignment.
+    /// </summary>
     public enum HTextAlignment
     {
+        /// <summary>
+        /// Left alignment.
+        /// </summary>
         Left,
+        /// <summary>
+        /// Center alignment.
+        /// </summary>
         Center,
+        /// <summary>
+        /// Right alignment.
+        /// </summary>
         Right
     }
 
+    /// <summary>
+    /// Represents vertical aligment.
+    /// </summary>
     public enum VTextAlignment
     {
+        /// <summary>
+        /// Bottom aligment.
+        /// </summary>
         Bottom,
+        /// <summary>
+        /// Center aligment. 
+        /// </summary>
         Center,
+        /// <summary>
+        /// Top aligment.
+        /// </summary>
         Top
     }
 }

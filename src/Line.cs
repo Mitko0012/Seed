@@ -8,20 +8,20 @@ namespace Seed
     public class Line:Element
     {
         /// <summary>
-        /// The X position of the end point of the line.
+        /// The X position of the end point of the line in game units.
         /// </summary>
         public double EndPosX;
         
         /// <summary>
-        /// The Y position of the end point of the line.
+        /// The Y position of the end point of the line in game units.
         /// </summary>
         public double EndPosY;
         /// <summary>
-        /// The width of the line.
+        /// The width of the line in game units.
         /// </summary>
         public double Width;
         /// <summary>
-        /// The color of the line.
+        /// The color of the line in game units.
         /// </summary>
         public Color Color;
 
