@@ -3,7 +3,7 @@ using System;
 namespace Seed
 {
     /// <summary>
-    /// This class represents elements which can be collision checked without having to create the collider(it checks if the elements are directly touching).
+    /// This class represents elements which can be directly collision checked.
     /// </summary>
     /// 
     public class CollidableElement : Element

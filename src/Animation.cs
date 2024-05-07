@@ -12,7 +12,7 @@ namespace Seed
     {
         Sprite sprite;
         /// <summary>
-        /// Represents the time the animation should wait after each frame where the index of an item from this array is the index of the frame after which the waiting should be done. 
+        /// Represents the time each animation frame is shown. 
         /// </summary>
         public int[] WaitTimes {get; set;}
         STexture[] frames;
@@ -29,7 +29,7 @@ namespace Seed
         /// Creates a new animation.
         /// </summary>
         /// <param name="sprite">The sprite the animation is gonna play on.</param>
-        /// <param name="waitTime">The time the animation should wait after each frame. If after certain frames more time should be waited, an item of the <c>WaitTimes</c> array can be changed.</param>
+        /// <param name="waitTime">The time each animation frame is shown. If certain frames should be shown longer, an item of the <c>WaitTimes</c> array can be changed.</param>
         /// <param name="isLooping">Whether the animation should loop after it finishes playing.</param>
         /// <param name="frames">The frames of the animation.</param>
         public Animation(Sprite sprite, int waitTime, bool isLooping, params STexture[] frames)
@@ -46,7 +46,7 @@ namespace Seed
         }
 
         /// <summary>
-        /// Starts playing the animation.
+        /// Starts the animation.
         /// </summary>
         public void StartAnimation()
         {
@@ -80,7 +80,7 @@ namespace Seed
         }
 
         /// <summary>
-        /// stops playing the animation.
+        /// Stops the animation.
         /// </summary>
         public void StopAnimation()
         {

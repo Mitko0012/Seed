@@ -11,25 +11,14 @@ namespace Seed
     public abstract class Element
     {
         /// <summary>
-        /// The X position of the element in pixels.
+        /// The X position of the element in game units.
         /// </summary>
         public double PosX;
         /// <summary>
-        /// The Y position of the element in pixels.
+        /// The Y position of the element in game units.
         /// </summary>
         public double PosY;
-        /// <summary>
-        /// The X position of the center of rotation of the element in pixels. Relative to the PosX of the element. 0 by default.
-        /// </summary>
-        public double RotationCenterX = 0;
-        /// <summary>
-        /// The T position of the center of rotation of the element in pixels. Relative to the PosY of the element. 0 by default.
-        /// </summary>
-        public double RotationCenterY = 0;
-        /// <summary>
-        /// The angle of rotation of the element. 0 by default.
-        /// </summary>
-        public double Angle = 0f;
+        
 
         public bool IsSticky = false;
         /// <summary>
@@ -37,7 +26,7 @@ namespace Seed
         /// </summary>
         public virtual void Draw(){}
 
-        public int Convert(double value, bool pos, bool x)
+        protected int Convert(double value, bool pos, bool x)
         {
             double unit = Math.Min(GameLogic.Width, GameLogic.Height) / GameLogic.UnitsOnCanvas;
             double camOffsetX = Camera.PosX * unit * -1 + (GameLogic.Width / 2);

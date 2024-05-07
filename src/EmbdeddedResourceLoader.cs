@@ -2,18 +2,41 @@ using System.Reflection;
 
 namespace Seed;
 
-public abstract class EmbdeddedResourceLoader
+/// <summary>
+/// This class contains methods for loading embedded resources.
+/// </summary>
+public static class EmbdeddedResourceLoader
 {
-    public static Assembly CurrAssembly = Assembly.GetExecutingAssembly();
-    public static Bitmap LoadImg(string path)
+    /// <summary>
+    /// Represents the current assembly of the program. Has to be initialized before resources could be loaded.
+    /// </summary>
+    public static Assembly? CurrAssembly;
+    
+    /// <summary>
+    /// Loads an embedded image resource.
+    /// </summary>
+    /// <param name="name">The name of the resource</param>
+    /// <returns>The resource represented as a <c>Bitmap</c> object</returns>
+    /// <exception cref="Exception">Thrown if the resource can't found.</exception>
+    public static Bitmap LoadImg(string name)
     {
-        Stream? textureStream = CurrAssembly.GetManifestResourceStream(path);
-        return textureStream == null? new Bitmap(1, 1) : new Bitmap(textureStream);
+        Stream? textureStream = CurrAssembly == null? null : CurrAssembly.GetManifestResourceStream(name);
+        if(textureStream == null)
+            throw new Exception("Resource not found");
+        return new Bitmap(textureStream);
     }
 
-    public static string LoadTextFile(string path)
+    /// <summary>
+    /// Loads an embedded text file resource.
+    /// </summary>
+    /// <param name="name">The name of the resource</param>
+    /// <returns>The resource's contents.</returns>
+    /// <exception cref="Exception">Thrown if the resource can't found.</exception>
+    public static string LoadTextFile(string name)
     {
-        Stream? fileStream = CurrAssembly.GetManifestResourceStream(path);
-        return fileStream == null? "" : new StreamReader(fileStream).ReadToEnd();
+        Stream? fileStream = CurrAssembly == null? null : CurrAssembly.GetManifestResourceStream(name);
+        if(fileStream == null)
+            throw new Exception("Resource not found");  
+        return new StreamReader(fileStream).ReadToEnd();
     }
 }

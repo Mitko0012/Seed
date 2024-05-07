@@ -9,21 +9,21 @@ namespace Seed
     public class Collider
     {
         /// <summary>
-        /// The start of the collider's X position in pixels relative to the parent element's X position.
+        /// The start of the collider on the X axis in game units relative to the parent element's X position.
         /// </summary>
         public double RelativeXStart{get; set;}
         
         /// <summary>
-        /// The end of the collider's X position in pixels relative to the parent element's X position.
+        /// The end of the collider on the X axis in game units relative to the parent element's X position.
         /// </summary>
         public double RelativeXEnd{get; set;}
         /// <summary>
-        /// The start of the collider's Y position in pixels relative to the parent element's Y position.
+        /// The start of the collider on the Y axis in game units relative to the parent element's Y position.
         /// </summary>
         public double RelativeYStart{get; private set;}
 
         /// <summary>
-        /// The end of the collider's Y position in pixels relative to the parent element's Y position.
+        /// The end of the collider on the Y axis in game units relative to the parent element's Y position.
         /// </summary>
         public double RelativeYEnd{get; set;}
 

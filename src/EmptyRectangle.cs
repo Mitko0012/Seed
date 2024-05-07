@@ -44,9 +44,10 @@ namespace Seed
         {
             GraphicsState state = GameLogic.G.Save();
             Pen pen = new Pen(Color, Convert(RectangleWidth, false, false));
-            GameLogic.G.TranslateTransform((float)this.PosX + (float)RotationCenterX, (float)this.PosY + (float)RotationCenterY);
+            Console.WriteLine(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)));
+            GameLogic.G.TranslateTransform(Convert(PosX, true, true) + Convert(RotationCenterX, false, true), Convert(PosY, true, false) + Convert(RotationCenterY, false, true));
             GameLogic.G.RotateTransform((float)Angle);
-            GameLogic.G.TranslateTransform(-((float)this.PosX + (float)RotationCenterX), -((float)this.PosY + (float)RotationCenterY));
+            GameLogic.G.TranslateTransform(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)), -(Convert(PosY, true, false) + Convert(RotationCenterY, false, true)));
             GameLogic.G.DrawRectangle(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
             GameLogic.G.Restore(state);
             pen.Dispose();

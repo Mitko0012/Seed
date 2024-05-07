@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Drawing;
 
 namespace Seed;
@@ -8,13 +9,14 @@ public class STexture
 
     public STexture(string texturePath, STextureOrigin origin)
     {
-        if(origin == STextureOrigin.FilePath)
+        switch(origin)
         {
-            Image = Image.FromFile(texturePath);
-        }
-        else
-        {
-            Image = EmbdeddedResourceLoader.LoadImg(texturePath);
+            case STextureOrigin.FilePath:
+                Image = Image.FromFile(texturePath);
+                break;
+            case STextureOrigin.EmbeddedImage:
+                Image = EmbdeddedResourceLoader.LoadImg(texturePath);
+                break;
         }
     }
 
@@ -22,4 +24,10 @@ public class STexture
     {
         Image = new Bitmap(width, height);
     }
+}
+
+public enum STextureOrigin
+{
+    FilePath,
+    EmbeddedImage,
 }

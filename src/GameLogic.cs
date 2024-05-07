@@ -14,7 +14,7 @@ using NAudio.Dmo;
 namespace Seed
 {
     /// <summary>
-    /// The main class from which all Seed scripts derive.
+    /// The main class of Seed. All Seed scripts derive from it.
     /// </summary>
     public abstract class GameLogic
     {
@@ -22,7 +22,7 @@ namespace Seed
         private static GameWindow window = new GameWindow(800, 600);
         static Bitmap secondBuffer = new Bitmap(window.Width, window.Height);
         /// <summary>
-        /// Object of type <c>Graphics</c> that is used to draw elements on the game window.
+        /// Object that is used to draw elements on the game window.
         /// </summary>
         public static Graphics G = Graphics.FromImage(secondBuffer);
         static Graphics? gWindow;
@@ -35,7 +35,10 @@ namespace Seed
         /// </summary>
         public static int FrameNumber {get; private set;} = 0;
 
-        public static double UnitsOnCanvas = 100;
+        /// <summary>
+        /// The number of game units currently present on the game window. 10 by default.
+        /// </summary>
+        public static double UnitsOnCanvas = 10;
         /// <summary>
         /// The width of the game window. 1300 by default.
         /// </summary>
@@ -45,7 +48,12 @@ namespace Seed
         /// </summary>
         public static int Height {get; private set;} = window.Height - (screenRectangle.Top - window.Top) - 8;
         
-        static private bool isFullScreen = false;
+        private static bool isFullScreen = false;
+
+        /// <summary>
+        /// A list of STextures that represents the tile map textures. The item with index 0 is an empty STexture.
+        /// </summary>
+        public static List<STexture> TileTextures = new List<STexture>(){new STexture(1, 1)};
 
         /// <summary>
         /// The desired FPS of the game. 60 by default.
@@ -63,7 +71,7 @@ namespace Seed
             {
                 if (value <= 0)
                 {
-                    throw new InvalidDataException("Fps cannot be less than 0");
+                    throw new Exception("Fps cannot be less than 0");
                 }
                 else
                 {
@@ -208,16 +216,16 @@ namespace Seed
             }
         }
         /// <summary>
-        /// Enables or disables the game window's resizing.
+        /// Enables or disables resizing the game window.
         /// </summary>
-        /// <param name="value">Defines whether the window should be able to be resized or not.</param>
-        public static void SetLocked(bool value)
+        /// <param name="value">Defines whether the game window should be allowed to be resized or not.</param>
+        public static void AllowResizing(bool value)
         {    
             if(!isFullScreen)
             {                
                 switch (value)
                 {
-                    case true:
+                    case false:
                     if(isRunning)
                     {
                         window.Invoke(() => window.FormBorderStyle = FormBorderStyle.FixedSingle);
@@ -229,7 +237,7 @@ namespace Seed
                         window.MaximizeBox = false;
                     }
                     break;
-                    case false:
+                    case true:
                     if(isRunning)
                     {
                         window.Invoke(() => window.FormBorderStyle = FormBorderStyle.Sizable);
@@ -253,7 +261,7 @@ namespace Seed
             switch(value)
             {
                 case true:
-                    SetLocked(true);
+                    AllowResizing(false);
                     isFullScreen = true;
                     if(isRunning)
                     {
@@ -271,12 +279,12 @@ namespace Seed
                     if(isRunning)
                     {
                         window.Invoke(() => window.WindowState = FormWindowState.Normal);
-                        SetLocked(false);
+                        AllowResizing(true);
                     }
                     else 
                     {
                         window.WindowState = FormWindowState.Normal;
-                        SetLocked(false);
+                        AllowResizing(true);
                     }
                     break;
             }
@@ -291,6 +299,9 @@ namespace Seed
             backgroundColor = color;
         }
 
+        /// <summary>
+        /// Exits the game.
+        /// </summary>
         public static void Exit()
         {
             Application.Exit();
@@ -298,7 +309,6 @@ namespace Seed
 
         private class GameWindow : Form
         {  
-            private static extern IntPtr FindWindow(string className, string windowText);
             public GameWindow(int width, int height)
             {
                 Height = height;
