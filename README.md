@@ -14,57 +14,50 @@ Seed has the following dependencies:
 ### Code example
 An example of Seed code
 ```C#
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using Seed;
+using System.Reflection;
 
-namespace Test
+namespace MyProject;
+
+public class Logic : GameLogic
 {
-    class Program : GameLogic
+    public Sprite MySprite = new Sprite(-2, -1, 3, 3, new STexture("MyProject.Textures.MyTexture.png", STextureOrigin.EmbeddedImage));
+    public override void OnStart()
     {
-        static Sprite sprite = new Sprite(Window.Width / 2 - 200/2, Window.Height / 2 - 200/2, 200, 200, Image.FromFile(@"example_path"));
-        Ellipse ellipse = new Ellipse(0, 100, 200, 200, Color.Blue);
-        static Animation anim = new Animation(sprite, 10, true, Image.FromFile(@"example_path"), 
-        Image.FromFile(@"example_path2"));
-        public override void OnStart()
+        
+    }
+
+    public override void OnFrame()
+    {
+        if(KeyHandler.KeysDown["W"])
         {
-            sprite.RotationCenterX = sprite.Width / 2;
-            sprite.RotationCenterY = sprite.Height / 2;
-            Window.Invoke(() => Window.FullScreen = true);
-            ellipse.RotationCenterX = ellipse.Width / 2;
-            ellipse.RotationCenterY = ellipse.Height / 2;
+            MySprite.PosY -= 2 * DeltaTime;
         }
-        public override void OnUpdate()
+        if(KeyHandler.KeysDown["A"])
         {
-            if(KeyHandler.KeysDown["D"])
-            {
-                sprite.Angle += 10f;
-                if(!anim.IsRunning)
-                {
-                    anim.StartAnimation();
-                }
-            }
-            else if(KeyHandler.KeysDown["A"])
-            {
-                sprite.Angle -= 10f;
-                if(!anim.IsRunning)
-                {
-                    anim.StartAnimation();
-                }
-            }
-            else 
-            {
-                anim.StopAnimation();
-            }
-            sprite.Draw();
-            ellipse.Draw();
+            MySprite.PosX -= 2 * DeltaTime;
         }
-        static void Main(string[] args)
+        if(KeyHandler.KeysDown["S"])
         {
-            Program prog = new Program();
-            GameLogic.StartGameLoop();
+            MySprite.PosY += 2 * DeltaTime;
         }
+        if(KeyHandler.KeysDown["D"])
+        {
+            MySprite.PosX += 2 * DeltaTime;
+        }
+        
+
+        MySprite.Draw();
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        EmbdeddedResourceLoader.CurrAssembly = Assembly.GetExecutingAssembly();
+        Logic myLogic = new Logic();
+        GameLogic.StartGameLoop();
     }
 }
 ```
