@@ -1,7 +1,3 @@
-using System;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.Devices;
-using NAudio;
 using NAudio.Wave;
 
 namespace Seed

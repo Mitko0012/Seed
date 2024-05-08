@@ -1,15 +1,4 @@
-using System;
-using System.CodeDom;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Reflection;
-using System.Runtime.InteropServices.Marshalling;
-using System.Security.Policy;
-using System.Text.Encodings.Web;
-using System.Windows.Forms;
-using Microsoft.VisualBasic.ApplicationServices;
-using Seed;
-using NAudio.Dmo;
 
 namespace Seed
 {

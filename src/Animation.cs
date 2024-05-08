@@ -1,8 +1,3 @@
-using System;
-using System.CodeDom;
-using System.Diagnostics;
-using System.Windows.Forms;
-
 namespace Seed
 {
     /// <summary>

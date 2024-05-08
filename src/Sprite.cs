@@ -1,9 +1,4 @@
-using System;
-using System.Drawing;
-using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Dynamic;
-using System.Windows.Forms;
 
 namespace Seed
 {
