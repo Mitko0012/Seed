@@ -42,7 +42,6 @@ namespace Seed
         {
             GraphicsState state = GameLogic.G.Save();
             Pen pen = new Pen(Color, Convert(RectangleWidth, false, false));
-            Console.WriteLine(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)));
             GameLogic.G.TranslateTransform(Convert(PosX, true, true) + Convert(RotationCenterX, false, true), Convert(PosY, true, false) + Convert(RotationCenterY, false, true));
             GameLogic.G.RotateTransform((float)Angle);
             GameLogic.G.TranslateTransform(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)), -(Convert(PosY, true, false) + Convert(RotationCenterY, false, true)));
