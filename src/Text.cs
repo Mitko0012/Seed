@@ -63,12 +63,15 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            format.Alignment = (StringAlignment)HorisontalAlignment;
-            format.LineAlignment = (StringAlignment)VerticalAlignment;
-            font = new Font(Font, Convert(Size, false, false));
-            Brush brush = new SolidBrush(Color);
-            GameLogic.G.DrawString(DisplayText, font, brush, Convert(PosX, true, true), Convert(PosY, true, false), format);
-            brush.Dispose();
+            if(Convert(Size, false, false) != 0)
+            {
+                format.Alignment = (StringAlignment)HorisontalAlignment;
+                format.LineAlignment = (StringAlignment)VerticalAlignment;
+                font = new Font(Font, Convert(Size, false, false));
+                Brush brush = new SolidBrush(Color);
+                GameLogic.G.DrawString(DisplayText, font, brush, Convert(PosX, true, true), Convert(PosY, true, false), format);
+                brush.Dispose();
+            }
         }
     }
 
