@@ -8,23 +8,31 @@ namespace Seed
         /// <summary>
         /// The X position of the mouse in game units.
         /// </summary>
-        public static double PosX{get; private set;}
+        public static double PosX {get; private set;}
         /// <summary>
         /// The Y position of the mouse in game units.
         /// </summary>
-        public static double PosY{get; private set;}
+        public static double PosY {get; private set;}
+        /// <summary>
+        /// The sticky X position of the mouse in game units.
+        /// </summary>
+        public static double StickyX {get; private set;}
+        /// <summary>
+        /// The sticky Y position of the mouse in game units.
+        /// </summary>
+        public static double StickyY {get; private set;}
         /// <summary>
         /// True if the left mouse button is down, otherwise false.
         /// </summary>
-        public static bool LeftDown{get; private set;}
+        public static bool LeftDown {get; private set;}
         /// <summary>
         /// True if the right mouse button is down, otherwise false.
         /// </summary>
-        public static bool RightDown{get; private set;}
+        public static bool RightDown {get; private set;}
         /// <summary>
         /// True if the middle mouse button is down, otherwise false.
         /// </summary>
-        public static bool MiddleDown{get; private set;}
+        public static bool MiddleDown {get; private set;}
 
         /// <summary>
         /// The event handler for when the mouse is moved.
@@ -34,8 +42,10 @@ namespace Seed
         public static void GetMousePos(object? sender, MouseEventArgs e)
         {
             double unit = (Math.Min(GameLogic.Width, GameLogic.Height) / GameLogic.UnitsOnCanvas);
-            PosX = e.X / unit - (((Camera.PosX * -1) + GameLogic.Width / 2 ) / unit);
-            PosY = e.Y / unit - (((Camera.PosY * -1) + GameLogic.Height / 2 ) / unit);
+            PosX = e.X / unit - GameLogic.Width / unit / 2 + Camera.PosX;
+            PosY = e.Y / unit - GameLogic.Height / unit / 2 + Camera.PosY;
+            StickyX = e.X / unit - GameLogic.Width / unit / 2;
+            StickyY = e.Y / unit - GameLogic.Width / unit / 2;
         }
 
         /// <summary>
