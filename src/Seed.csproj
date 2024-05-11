@@ -10,7 +10,7 @@
     <PackageId>SeedLib</PackageId>
     <Authors>Mitko0012</Authors>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Version>1.2.4</Version>
+    <Version>1.2.5</Version>
     <RootNamespace>Seed</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>

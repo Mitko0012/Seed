@@ -45,7 +45,7 @@ namespace Seed
             PosX = e.X / unit - GameLogic.Width / unit / 2 + Camera.PosX;
             PosY = e.Y / unit - GameLogic.Height / unit / 2 + Camera.PosY;
             StickyX = e.X / unit - GameLogic.Width / unit / 2;
-            StickyY = e.Y / unit - GameLogic.Width / unit / 2;
+            StickyY = e.Y / unit - GameLogic.Height / unit / 2;
         }
 
         /// <summary>
