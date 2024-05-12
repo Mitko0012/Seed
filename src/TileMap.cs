@@ -30,7 +30,7 @@ public class Tilemap : Element
         {
             foreach(int tile in row)
             {
-                GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, Convert(currX, true, true), Convert(currY, true, false), Convert(1, false, true), Convert(1, false, false));
+                GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, Convert(currX, true, true), Convert(currY, true, false), Convert(1.05, false, true), Convert(1.05, false, false));
                 currX++;
             }
             currX = 0;
