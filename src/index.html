@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF=8">
+        <title>Seed</title>
+        <link rel="icon" href="Images/Logo.png">
+        <link rel="stylesheet" href="style.css">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <div id="headCenter">
+                <img src="Images/Logo.png" id="logo">
+            </div>
+        </header>
+        <div id="menuContainer">    
+            <div id="menu">
+                <div class="menuElement" onclick="loadPage(0)">Introduction</div>
+                <div class="menuElement" onclick="loadPage(1)">GameLogic</div>
+                <div class="menuElement" onclick="loadPage(2)">Element</div>
+                <div class="menuElement" onclick="loadPage(3)">CollidableElement</div>
+                <div class="menuElement" onclick="loadPage(4)">Ellipse</div>
+                <div class="menuElement" onclick="loadPage(5)">EmptyEllipse</div>
+                <div class="menuElement" onclick="loadPage(6)">FullRectangle</div>
+                <div class="menuElement" onclick="loadPage(7)">EmptyRectangle</div>
+                <div class="menuElement" onclick="loadPage(8)">Sprite</div>
+                <div class="menuElement" onclick="loadPage(9)">Line</div>
+                <div class="menuElement" onclick="loadPage(10)">Text</div>
+                <div class="menuElement" onclick="loadPage(13)">Tilemap</div>
+                <div class="menuElement" onclick="loadPage(11)">Collider</div>
+                <div class="menuElement" onclick="loadPage(12)">Camera</div>
+                <div class="menuElement" onclick="loadPage(14)">Mouse</div>
+                <div class="menuElement" onclick="loadPage(15)">KeyHandler</div>
+                <div class="menuElement" onclick="loadPage(16)">STexture</div>
+                <div class="menuElement" onclick="loadPage(17)">STextureOrigin</div>
+            </div>
+            <input id="toggleButt" type="button" value="Hide">
+        </div>
+        <div id="pageContentContainer">            
+            <div id="pageContent">
+                <!--Dynamically loaded content-->
+            </div>
+        </div>
+        
+        <script src="pages.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
