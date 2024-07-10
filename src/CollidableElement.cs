@@ -7,22 +7,22 @@ namespace Seed
     public class CollidableElement : Element
     {
         /// <summary>
-        /// The width of the element in pixels.
+        /// The width of the element in game units.
         /// </summary>
         
         public double Width;
         /// <summary>
-        /// The height of the element in pixels.
+        /// The height of the element in game units.
         /// </summary>
         
         public double Height;
 
         /// <summary>
-        /// The X position of the center of rotation of the element in pixels. Relative to the PosX of the element. 0 by default.
+        /// The X position of the center of rotation of the element in game units. Relative to the PosX of the element. 0 by default.
         /// </summary>
         public double RotationCenterX = 0;
         /// <summary>
-        /// The T position of the center of rotation of the element in pixels. Relative to the PosY of the element. 0 by default.
+        /// The T position of the center of rotation of the element in game units. Relative to the PosY of the element. 0 by default.
         /// </summary>
         public double RotationCenterY = 0;
         /// <summary>

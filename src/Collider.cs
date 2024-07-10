@@ -17,7 +17,7 @@ namespace Seed
         /// <summary>
         /// The start of the collider on the Y axis in game units relative to the parent element's Y position.
         /// </summary>
-        public double RelativeYStart{get; private set;}
+        public double RelativeYStart{get; set;}
 
         /// <summary>
         /// The end of the collider on the Y axis in game units relative to the parent element's Y position.
@@ -113,8 +113,8 @@ namespace Seed
         /// Checks if a point is inside a collidable element.
         /// </summary>
         /// <param name="element">The element.</param>
-        /// <param name="pointX">The X position of the point in pixels.</param>
-        /// <param name="pointY">The Y position of the point.</param>
+        /// <param name="pointX">The X position of the point in game units.</param>
+        /// <param name="pointY">The Y position of the point in game units.</param>
         /// <returns>True if the point is inside the element, false if not.</returns>
         static public bool IsPointInside(CollidableElement element, double pointX, double pointY)
         {
@@ -132,8 +132,8 @@ namespace Seed
         /// Checks if a point is inside a collider.
         /// </summary>
         /// <param name="collider">The collider.</param>
-        /// <param name="pointX">The X position of the point in pixels.</param>
-        /// <param name="pointY">The Y position of the point in pixels.</param>
+        /// <param name="pointX">The X position of the point in game units.</param>
+        /// <param name="pointY">The Y position of the point in game units.</param>
         /// <returns>True if the point is inside the collider, false if not.</returns>
         static public bool IsPointInside(Collider collider, double pointX, double pointY)
         {

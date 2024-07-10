@@ -33,7 +33,7 @@ public class Tilemap : Element
                 GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, Convert(currX, true, true), Convert(currY, true, false), Convert(1.05, false, true), Convert(1.05, false, false));
                 currX++;
             }
-            currX = 0;
+            currX = PosX;
             currY++;
         }
     }

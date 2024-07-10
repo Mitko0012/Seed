@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Drawing.Drawing2D;
 
 namespace Seed
 {
@@ -29,11 +30,11 @@ namespace Seed
         /// </summary>
         public static double UnitsOnCanvas = 10;
         /// <summary>
-        /// The width of the game window. 800 by default.
+        /// The width of the game window in pixels. 800 by default.
         /// </summary>
         public static int Width {get; private set;} = window.Width;
         /// <summary>
-        /// The height of the game window. 600 by default.
+        /// The height of the game window in pixels. 600 by default.
         /// </summary>
         public static int Height {get; private set;} = window.Height - (screenRectangle.Top - window.Top) - 8;
         
@@ -105,6 +106,7 @@ namespace Seed
         /// <exception cref="Exception">Thrown if the method is called more than once.</exception>
         public static void StartGameLoop()
         {
+            G.InterpolationMode = InterpolationMode.NearestNeighbor;
             if(isRunning)
             {
                 throw new Exception("Game loop can only be started once");
