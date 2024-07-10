@@ -10,6 +10,8 @@ Seed has the following dependencies:
   - Version: 2.2.1
   - License: [MIT License](https://licenses.nuget.org/MIT)
 
+## Documentation
+[The Seed documentation](https://seeddocs.netlify.app)
 
 ### Code example
 An example of Seed code
@@ -61,3 +63,4 @@ public class Program
     }
 }
 ```
+
