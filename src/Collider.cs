@@ -78,7 +78,7 @@ namespace Seed
             if(element.PosX + (element.IsSticky? Camera.PosX : 0) < collider.ParentElement.PosX + (collider.ParentElement.IsSticky? Camera.PosX : 0) + collider.RelativeXEnd && 
             element.PosX + (element.IsSticky? Camera.PosX : 0) + element.Width > collider.ParentElement.PosX + (collider.ParentElement.IsSticky? Camera.PosX : 0) + collider.RelativeXStart &&
             element.PosY + (element.IsSticky? Camera.PosY : 0) < collider.ParentElement.PosY + (collider.ParentElement.IsSticky? Camera.PosY : 0) + collider.RelativeYEnd && 
-            element.PosY + (element.IsSticky? Camera.PosY : 0) + element.Height > collider.ParentElement.PosY + (collider.ParentElement.IsSticky? Camera.PosY : 0))
+            element.PosY + (element.IsSticky? Camera.PosY : 0) + element.Height > collider.ParentElement.PosY + (collider.ParentElement.IsSticky? Camera.PosY : 0) + collider.RelativeYStart)
             {
                 return true;
             }
