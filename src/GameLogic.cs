@@ -121,6 +121,7 @@ namespace Seed
         {
             Thread.Sleep(3);
             gWindow = window.Invoke(() => window.CreateGraphics());
+            gWindow.InterpolationMode = InterpolationMode.NearestNeighbor;
             foreach(GameLogic script in scripts)
             {
                 script.OnStart();
@@ -137,6 +138,8 @@ namespace Seed
                     secondBuffer = new Bitmap(window.Width, window.Height);
                     G = Graphics.FromImage(secondBuffer);
                     gWindow = window.Invoke(() => window.CreateGraphics());
+                    G.InterpolationMode = InterpolationMode.NearestNeighbor;
+                    gWindow.InterpolationMode = InterpolationMode.NearestNeighbor;
                 }
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
