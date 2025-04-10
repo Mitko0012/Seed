@@ -5,6 +5,8 @@ namespace Seed;
 /// </summary>
 public class Tilemap : Element
 {
+    const double Scale = 1.05;
+    
     /// <summary>
     /// The tile map where each value corresponds to an index of an item in <c>GameLogic.TileTextures</c>
     /// </summary>
@@ -30,7 +32,7 @@ public class Tilemap : Element
         {
             foreach(int tile in row)
             {
-                GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, Convert(currX, true, true), Convert(currY, true, false), Convert(1.05, false, true), Convert(1.05, false, false));
+                GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), ScaleConverter.GameToNeutral(Scale, false, true, IsSticky), ScaleConverter.GameToNeutral(Scale, false, false, IsSticky));
                 currX++;
             }
             currX = PosX;

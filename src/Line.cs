@@ -46,8 +46,12 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            Pen pen = new Pen(Color, Convert(Width, false, false));
-            GameLogic.G.DrawLine(pen, Convert(PosX, true, true), Convert(PosY, true, false), Convert(EndPosX, true, true), Convert(EndPosY, true, false));
+            Collider col = new Collider(0, EndPosX, 0, EndPosY, this);
+            if(Collider.IsColliding(GameLogic.IsInScreenRect, col))
+            {
+                Pen pen = new Pen(Color, ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                GameLogic.G.DrawLine(pen, ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky), ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky));
+            }
         }
     }
 }

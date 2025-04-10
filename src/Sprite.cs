@@ -33,12 +33,21 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            GraphicsState state = GameLogic.G.Save();
-            GameLogic.G.TranslateTransform(Convert(PosX, true, true) + Convert(RotationCenterX, false, true), Convert(PosY, true, false) + Convert(RotationCenterY, false, true));
-            GameLogic.G.RotateTransform((float)Angle);
-            GameLogic.G.TranslateTransform(-(Convert(PosX, true, true) + Convert(RotationCenterX, false, true)), -(Convert(PosY, true, false) + Convert(RotationCenterY, false, true)));
-            GameLogic.G.DrawImage(Texture.Image, Convert(PosX, true, true), Convert(PosY, true, false), Convert(Width, false, true), Convert(Height, false, true));
-            GameLogic.G.Restore(state);
+            if(Collider.IsColliding(this, GameLogic.IsInScreenRect))
+            {
+                double neutralX = ScaleConverter.GameToNeutral(PosX, true, true, IsSticky);
+                double neutralY = ScaleConverter.GameToNeutral(PosY, true, false, IsSticky);
+                double neutralRotationX = ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky);
+                double neutralRotationY = ScaleConverter.GameToNeutral(RotationCenterY, false, true, IsSticky);
+                double neutralWidth = ScaleConverter.GameToNeutral(Width, false, true, IsSticky);
+                double neutralHeight = ScaleConverter.GameToNeutral(Height, false, true, IsSticky);
+                GraphicsState state = GameLogic.G.Save();
+                GameLogic.G.TranslateTransform(neutralX + neutralRotationX, neutralY + neutralRotationY);
+                GameLogic.G.RotateTransform((float)Angle);
+                GameLogic.G.TranslateTransform(-(neutralX + neutralRotationX), -(neutralY + neutralRotationY));
+                GameLogic.G.DrawImage(Texture.Image, neutralX, neutralY, neutralWidth, neutralHeight);
+                GameLogic.G.Restore(state);
+            }
         }
     }
 }

@@ -63,13 +63,35 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            if(Convert(Size, false, false) != 0)
+            Collider col = new Collider(0, Scale * DisplayText.Length, 0, Scale, this);
+            if(HorisontalAlignment == HTextAlignment.Center)
+            {
+                col.RelativeXStart = 0 - Scale * DisplayText.Length / 2;
+                col.RelativeXEnd = 0 + Scale * DisplayText.Length / 2;
+            }
+            else if(HorisontalAlignment == HTextAlignment.Right)
+            {
+                col.RelativeXStart = 0 - Scale * DisplayText.Length;
+                col.RelativeXEnd = 0;
+            }
+            if(VerticalAlignment = VTextAlignment.Center)
+            {
+                col.RelativeYStart = 0 - Scale * DisplayText.Length / 2;
+                col.RelativeYEnd = 0 + Scale * DisplayText.Length / 2;
+            }
+            else if(VerticalAlignment == VTextAlignment.Right)
+            {
+                col.RelativeYStart = 0 - Scale * DisplayText.Length;
+                col.RelativeYEnd = 0;
+            }
+            double neutralSize = ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+            if(neutralSize != 0)
             {
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;
-                font = new Font(Font, Convert(Size, false, false));
+                font = new Font(Font, neutralSize));
                 Brush brush = new SolidBrush(Color);
-                GameLogic.G.DrawString(DisplayText, font, brush, Convert(PosX, true, true), Convert(PosY, true, false), format);
+                GameLogic.G.DrawString(DisplayText, font, brush, ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), format);
                 brush.Dispose();
             }
         }

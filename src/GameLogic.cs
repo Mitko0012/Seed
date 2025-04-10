@@ -80,6 +80,11 @@ namespace Seed
         static public double DeltaTime {get; private set;}
         
         /// <summary>
+        /// Rectangle that stretches the entire screen. It is used to determine if an element is in the screen and should it be drawn.
+        /// </summary>
+        public static FullRectangle? IsInScreenRect;
+        
+        /// <summary>
         /// Called when the game loop starts. It has to be overriden. It can be used to provide code to be executed when the game loop is started.
         /// </summary>
         public abstract void OnStart();
@@ -140,6 +145,7 @@ namespace Seed
                     gWindow = window.Invoke(() => window.CreateGraphics());
                     G.InterpolationMode = InterpolationMode.NearestNeighbor;
                     gWindow.InterpolationMode = InterpolationMode.NearestNeighbor;
+                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), Color.FromArgb(0, 0, 0));
                 }
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
