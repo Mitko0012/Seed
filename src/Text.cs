@@ -23,7 +23,7 @@ namespace Seed
         public string DisplayText;
         
         /// <summary>
-        /// The font of the text. Arial by default.
+        /// The font family of the text. Arial by default.
         /// </summary>
         public string Font = "Arial";
         /// <summary>
@@ -39,6 +39,7 @@ namespace Seed
         /// The vertical aligment of the text. Bottom by default.
         /// </summary>
         public VTextAlignment VerticalAlignment = VTextAlignment.Bottom;
+        private const double _heightLetters = 1.5;
         
         /// <summary>
         /// Creates a new instance of the Text class.
@@ -55,7 +56,7 @@ namespace Seed
             Font = font;
             Size = size;
             DisplayText = text;
-            this.font = new Font(Font, Convert(Size, false, false));
+            this.font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
         }
 
         /// <summary>
@@ -63,35 +64,35 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            Collider col = new Collider(0, Scale * DisplayText.Length, 0, Scale, this);
+            Collider col = new Collider(0, Size * DisplayText.Length, 0, Size * _heightLetters, this);
             if(HorisontalAlignment == HTextAlignment.Center)
             {
-                col.RelativeXStart = 0 - Scale * DisplayText.Length / 2;
-                col.RelativeXEnd = 0 + Scale * DisplayText.Length / 2;
+                col.RelativeXStart = 0 - Size * DisplayText.Length / 2;
+                col.RelativeXEnd = 0 + Size * DisplayText.Length / 2;
             }
             else if(HorisontalAlignment == HTextAlignment.Right)
             {
-                col.RelativeXStart = 0 - Scale * DisplayText.Length;
+                col.RelativeXStart = 0 - Size * DisplayText.Length;
                 col.RelativeXEnd = 0;
             }
-            if(VerticalAlignment = VTextAlignment.Center)
+            if(VerticalAlignment == VTextAlignment.Center)
             {
-                col.RelativeYStart = 0 - Scale * DisplayText.Length / 2;
-                col.RelativeYEnd = 0 + Scale * DisplayText.Length / 2;
+                col.RelativeYStart = 0 - Size * _heightLetters / 2;
+                col.RelativeYEnd = 0 + Size * _heightLetters / 2;
             }
-            else if(VerticalAlignment == VTextAlignment.Right)
+            else if(VerticalAlignment == VTextAlignment.Top)
             {
-                col.RelativeYStart = 0 - Scale * DisplayText.Length;
-                col.RelativeYEnd = 0;
+                col.RelativeYStart = 0;
+                col.RelativeYEnd = -(Size * _heightLetters);
             }
-            double neutralSize = ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
-            if(neutralSize != 0)
+            float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+            if(neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;
-                font = new Font(Font, neutralSize));
+                font = new Font(Font, neutralSize);
                 Brush brush = new SolidBrush(Color);
-                GameLogic.G.DrawString(DisplayText, font, brush, ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), format);
+                GameLogic.G.DrawString(DisplayText, font, brush, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), format);
                 brush.Dispose();
             }
         }

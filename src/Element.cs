@@ -22,6 +22,5 @@ namespace Seed
         /// Draws the element on the game window. 
         /// </summary>
         public virtual void Draw(){}
-        }
     }
 }

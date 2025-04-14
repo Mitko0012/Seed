@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 
 namespace Seed
 {
@@ -112,6 +113,8 @@ namespace Seed
         public static void StartGameLoop()
         {
             G.InterpolationMode = InterpolationMode.NearestNeighbor;
+            G.SmoothingMode = SmoothingMode.HighSpeed;
+            G.CompositingQuality = CompositingQuality.HighSpeed;
             if(isRunning)
             {
                 throw new Exception("Game loop can only be started once");
@@ -119,14 +122,15 @@ namespace Seed
             Thread startWindow = new Thread(() => Application.Run(window));
             startWindow.Start();
             isRunning = true;
+            IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
             CallUpdate();
         }
 
         static void CallUpdate()
         {
-            Thread.Sleep(3);
-            gWindow = window.Invoke(() => window.CreateGraphics());
-            gWindow.InterpolationMode = InterpolationMode.NearestNeighbor;
+            Task.Delay(3);
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             foreach(GameLogic script in scripts)
             {
                 script.OnStart();
@@ -138,14 +142,18 @@ namespace Seed
                 Brush brush = new SolidBrush(backgroundColor);
                 Width = window.Width;
                 Height = window.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0? 0 : 8);
-                if(secondBuffer.Size != window.Size)
+                if(secondBuffer.Size != window.Size || gWindow == null)
                 {
                     secondBuffer = new Bitmap(window.Width, window.Height);
                     G = Graphics.FromImage(secondBuffer);
                     gWindow = window.Invoke(() => window.CreateGraphics());
                     G.InterpolationMode = InterpolationMode.NearestNeighbor;
                     gWindow.InterpolationMode = InterpolationMode.NearestNeighbor;
-                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), Color.FromArgb(0, 0, 0));
+                    G.SmoothingMode = SmoothingMode.HighSpeed;
+                    G.CompositingQuality = CompositingQuality.HighSpeed;
+                    gWindow.SmoothingMode = SmoothingMode.HighSpeed;
+                    gWindow.CompositingQuality = CompositingQuality.HighSpeed;
+                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
                 }
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
@@ -157,14 +165,15 @@ namespace Seed
                 }
                 gWindow.DrawImage(secondBuffer, Point.Empty);
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                long timeItTook = endTime - timeAtLastFrameMillis;
+                long timeItTook = stopwatch.ElapsedMilliseconds;
                 long waitTime = 1000/DesiredFps - timeItTook;
                 FrameNumber++;
                 if(waitTime > 0)    
                 {
-                    Thread.Sleep(Convert.ToInt32(waitTime));
+                    Thread.Sleep((int)waitTime);
                 }
-                Fps = Convert.ToInt32(1f/DeltaTime);
+                if(DeltaTime != 0)
+                    Fps = Convert.ToInt32(1f/DeltaTime);
             }
         }
         /// <summary>
@@ -321,10 +330,12 @@ namespace Seed
                 this.MouseDown += Mouse.OnMouseDown;
                 this.MouseUp += Mouse.OnMouseUp;
                 Assembly assembly = Assembly.GetExecutingAssembly();
-                Stream? imageStream = assembly.GetManifestResourceStream("Seed.Icons.Icon.ico");
-                if (imageStream != null)
+                using(Stream? imageStream = assembly.GetManifestResourceStream("Seed.Icons.Icon.ico"))
                 {
-                    this.Icon = new Icon(imageStream);
+                    if (imageStream != null)
+                    {
+                        this.Icon = new Icon(imageStream);
+                    }
                 }
                 this.FormClosing += new FormClosingEventHandler(GameWindow.Close); 
             }

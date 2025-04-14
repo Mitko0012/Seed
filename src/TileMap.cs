@@ -32,7 +32,12 @@ public class Tilemap : Element
         {
             foreach(int tile in row)
             {
-                GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), ScaleConverter.GameToNeutral(Scale, false, true, IsSticky), ScaleConverter.GameToNeutral(Scale, false, false, IsSticky));
+                FullRectangle rect = new FullRectangle(currX, currY, Scale, Scale, Color.FromArgb(0, 0, 0));
+                if(Collider.IsColliding(rect, GameLogic.IsInScreenRect))
+                {
+                    GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, (float)ScaleConverter.GameToNeutral(currX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(currY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, true, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, false, IsSticky));
+                    Console.WriteLine($"Tile at {currX}; {currY} is being drawn!");
+                }
                 currX++;
             }
             currX = PosX;

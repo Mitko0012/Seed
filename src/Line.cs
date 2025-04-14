@@ -46,11 +46,15 @@ namespace Seed
         /// </summary>
         public override void Draw()
         {
-            Collider col = new Collider(0, EndPosX, 0, EndPosY, this);
+            double MinX = Math.Min(EndPosX, PosX);
+            double MaxX = Math.Max(EndPosX, PosX);
+            double MinY = Math.Min(EndPosY, PosY);
+            double MaxY = Math.Max(EndPosY, PosY);
+            Collider col = new Collider(MinX - PosX, MaxX - MinX, MinY - PosY, MaxY - MinY, this);
             if(Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
-                Pen pen = new Pen(Color, ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
-                GameLogic.G.DrawLine(pen, ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky), ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky));
+                Pen pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                GameLogic.G.DrawLine(pen, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky));
             }
         }
     }
