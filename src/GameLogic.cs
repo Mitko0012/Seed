@@ -70,6 +70,8 @@ namespace Seed
                 }
             }
         }
+        private static double _lastCameraX = Camera.PosX;
+        private static double _lastCameraY = Camera.PosY;
 
         /// <summary>
         /// The actual FPS of the game.
@@ -163,10 +165,14 @@ namespace Seed
                 {
                     script.OnFrame();
                 }
+                 if(_lastCameraX != Camera.PosX || _lastCameraY != Camera.PosY)
+                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
                 gWindow.DrawImage(secondBuffer, Point.Empty);
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 long timeItTook = stopwatch.ElapsedMilliseconds;
                 long waitTime = 1000/DesiredFps - timeItTook;
+                _lastCameraX = Camera.PosX;
+                _lastCameraY = Camera.PosY;
                 FrameNumber++;
                 if(waitTime > 0)    
                 {

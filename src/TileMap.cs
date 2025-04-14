@@ -36,7 +36,6 @@ public class Tilemap : Element
                 if(Collider.IsColliding(rect, GameLogic.IsInScreenRect))
                 {
                     GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, (float)ScaleConverter.GameToNeutral(currX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(currY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, true, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, false, IsSticky));
-                    Console.WriteLine($"Tile at {currX}; {currY} is being drawn!");
                 }
                 currX++;
             }
