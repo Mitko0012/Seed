@@ -5,14 +5,29 @@ namespace Seed
     /// </summary>
     public class Text : Element
     {
+        Brush _brush = new SolidBrush(Color.Black);
+
+        Color _color;
         /// <summary>
         /// The color of the text. Black by default.
         /// </summary>
-        public Color Color = Color.Black;
+        public Color Color
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                _color = value;
+                _brush.Dispose();
+                _brush = new SolidBrush(value);
+            }
+        }
         /// <summary>
         /// The font of the text.
         /// </summary>
-        Font font;
+        Font _font;
         /// <summary>
         /// The string format of the text.
         /// </summary>
@@ -21,15 +36,45 @@ namespace Seed
         /// The content of the text.
         /// </summary>
         public string DisplayText;
-        
+
+        string _fontString;
         /// <summary>
         /// The font family of the text. Arial by default.
         /// </summary>
-        public string Font = "Arial";
+        public string Font
+        {
+            get
+            {
+                return _fontString;
+            }
+            set
+            {
+                _fontString = value;
+                _font?.Dispose();
+                float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+                if (neutralSize != 0)
+                    _font = new Font(Font, neutralSize);
+            }
+        }
+        double _size = 0;
         /// <summary>
         /// The size of the text in game units.
         /// </summary>
-        public double Size;
+        public double Size
+        {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                _size = value;
+                _font?.Dispose();
+                float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+                if (neutralSize != 0)
+                    _font = new Font(Font, neutralSize);
+            }
+        }
 
         /// <summary>
         /// The horizontal alignment of the text. Left by default.
@@ -40,7 +85,10 @@ namespace Seed
         /// </summary>
         public VTextAlignment VerticalAlignment = VTextAlignment.Bottom;
         private const double _heightLetters = 1.5;
-        
+        double _widthAtLastDraw = -1;
+        double _heightAtLastDraw = -1;
+        double _unitsAtLastDraw;
+
         /// <summary>
         /// Creates a new instance of the Text class.
         /// </summary>
@@ -56,7 +104,9 @@ namespace Seed
             Font = font;
             Size = size;
             DisplayText = text;
-            this.font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
+            Color = Color.Black;
+            _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
+            _font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
         }
 
         /// <summary>
@@ -65,35 +115,83 @@ namespace Seed
         public override void Draw()
         {
             Collider col = new Collider(0, Size * DisplayText.Length, 0, Size * _heightLetters, this);
-            if(HorisontalAlignment == HTextAlignment.Center)
+            if (HorisontalAlignment == HTextAlignment.Center)
             {
                 col.RelativeXStart = 0 - Size * DisplayText.Length / 2;
                 col.RelativeXEnd = 0 + Size * DisplayText.Length / 2;
             }
-            else if(HorisontalAlignment == HTextAlignment.Right)
+            else if (HorisontalAlignment == HTextAlignment.Right)
             {
                 col.RelativeXStart = 0 - Size * DisplayText.Length;
                 col.RelativeXEnd = 0;
             }
-            if(VerticalAlignment == VTextAlignment.Center)
+            if (VerticalAlignment == VTextAlignment.Center)
             {
                 col.RelativeYStart = 0 - Size * _heightLetters / 2;
                 col.RelativeYEnd = 0 + Size * _heightLetters / 2;
             }
-            else if(VerticalAlignment == VTextAlignment.Top)
+            else if (VerticalAlignment == VTextAlignment.Top)
             {
                 col.RelativeYStart = 0;
                 col.RelativeYEnd = -(Size * _heightLetters);
             }
             float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
-            if(neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col))
+            if (neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                {
+                    _font?.Dispose();
+                    _font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
+                }
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;
-                font = new Font(Font, neutralSize);
-                Brush brush = new SolidBrush(Color);
-                GameLogic.G.DrawString(DisplayText, font, brush, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), format);
-                brush.Dispose();
+                GameLogic.G.DrawString(DisplayText, _font, _brush, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), format);
+                _widthAtLastDraw = GameLogic.Width;
+                _heightAtLastDraw = GameLogic.Height;
+                _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
+            }
+        }
+
+        public override void DrawOnSection(DrawingSection section)
+        {
+            Collider col = new Collider(0, Size * DisplayText.Length, 0, Size * _heightLetters, this);
+            if (HorisontalAlignment == HTextAlignment.Center)
+            {
+                col.RelativeXStart = 0 - Size * DisplayText.Length / 2;
+                col.RelativeXEnd = 0 + Size * DisplayText.Length / 2;
+            }
+            else if (HorisontalAlignment == HTextAlignment.Right)
+            {
+                col.RelativeXStart = 0 - Size * DisplayText.Length;
+                col.RelativeXEnd = 0;
+            }
+            if (VerticalAlignment == VTextAlignment.Center)
+            {
+                col.RelativeYStart = 0 - Size * _heightLetters / 2;
+                col.RelativeYEnd = 0 + Size * _heightLetters / 2;
+            }
+            else if (VerticalAlignment == VTextAlignment.Top)
+            {
+                col.RelativeYStart = 0;
+                col.RelativeYEnd = -(Size * _heightLetters);
+            }
+            float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+            if (neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col) && Collider.IsColliding(section, col))
+            {
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                {
+                    _font?.Dispose();
+                    _font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
+                }
+                format.Alignment = (StringAlignment)HorisontalAlignment;
+                format.LineAlignment = (StringAlignment)VerticalAlignment;
+                _font = new Font(Font, neutralSize);
+                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
+                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
+                section.G.DrawString(DisplayText, _font, _brush, neutralX, neutralY, format);
+                _widthAtLastDraw = GameLogic.Width;
+                _heightAtLastDraw = GameLogic.Height;
+                _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
         }
     }

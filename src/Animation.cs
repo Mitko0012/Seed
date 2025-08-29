@@ -9,17 +9,18 @@ namespace Seed
         /// <summary>
         /// Represents the time each animation frame is shown. 
         /// </summary>
-        public int[] WaitTimes {get; set;}
-        STexture[] frames;
+        public int[] WaitTimes { get; private set; }
+        internal STexture[] Frames;
         /// <summary>
         /// True if the animation is currently running, false if not.
         /// </summary>
-        public bool IsRunning {get; private set;}
+        public bool IsRunning { get; private set; }
         /// <summary>
         /// Whether the animation should loop after it ends.
         /// </summary>
-        public bool Looping {get; set;}
-        
+        public bool Looping { get; set; }
+        private static List<AnimationRunner> AnimsToRun = new List<AnimationRunner>();
+
         /// <summary>
         /// Creates a new animation.
         /// </summary>
@@ -29,11 +30,11 @@ namespace Seed
         /// <param name="frames">The frames of the animation.</param>
         public Animation(Sprite sprite, int waitTime, bool isLooping, params STexture[] frames)
         {
-            this.frames = frames;
+            this.Frames = frames;
             this.sprite = sprite;
             Looping = isLooping;
             List<int> waitTimes = new List<int>();
-            foreach(STexture frame in frames)
+            foreach (STexture frame in frames)
             {
                 waitTimes.Add(waitTime);
             }
@@ -45,34 +46,13 @@ namespace Seed
         /// </summary>
         public void StartAnimation()
         {
-            Thread animThread = new Thread(PlayAnimation);
-            animThread.Start();
-        }
-
-        void PlayAnimation()
-        {
-            IsRunning = true;
-            foreach(STexture frame in this.frames)
+            if (!IsRunning)
             {
-                if(IsRunning)
-                {
-                    sprite.Texture = frames[Array.IndexOf(frames, frame)];
-                    Thread.Sleep(WaitTimes[Array.IndexOf(frames, frame)]);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if(Looping && IsRunning)
-            {
-                PlayAnimation();
-            }
-            else
-            {
-                IsRunning = false;
+                IsRunning = true;
+                AnimsToRun.Add(new AnimationRunner(sprite, this));
             }
         }
+        
 
         /// <summary>
         /// Stops the animation.
@@ -80,6 +60,69 @@ namespace Seed
         public void StopAnimation()
         {
             this.IsRunning = false;
+        }
+
+        class AnimationRunner
+        {
+            public double Time = 0;
+            public int FrameAt = 0;
+            public Animation Anim;
+            public Sprite Sprite;
+            public AnimationRunner(Sprite sprite, Animation anim)
+            {
+                Sprite = sprite;
+                Anim = anim;
+            }
+        }
+
+        internal static void CheckAnimations()
+        {
+            List<AnimationRunner> finishedAnims = new List<AnimationRunner>();
+            foreach (AnimationRunner runner in AnimsToRun)
+            {
+                if (runner.Anim.IsRunning == false)
+                {
+                    finishedAnims.Add(runner);
+                    continue;
+                }
+                if (runner.Time == 0 && runner.FrameAt == 0)
+                        runner.Sprite.Texture = runner.Anim.Frames[runner.FrameAt];
+                double time = GameLogic.DeltaTime * 1000;
+                double waitTime = runner.Anim.WaitTimes[runner.FrameAt];
+                runner.Time += time;
+                while (runner.Time > waitTime)
+                {
+                    runner.FrameAt++;
+                    if (runner.FrameAt < runner.Anim.WaitTimes.Length)
+                    {
+                        runner.Sprite.Texture = runner.Anim.Frames[runner.FrameAt];
+                        runner.Time = 0;
+                    }
+                    else
+                    {
+                        if (runner.Anim.Looping)
+                        {
+                            runner.FrameAt = 0;
+                            runner.Sprite.Texture = runner.Anim.Frames[runner.FrameAt];
+                            runner.Time = 0;
+                        }
+                        else
+                        {
+                            runner.Anim.IsRunning = false;
+                            finishedAnims.Add(runner);
+                        }
+                        break;
+                    }
+                    time -= waitTime;
+                    runner.Time += time;
+                    waitTime = runner.Anim.WaitTimes[runner.FrameAt];
+                }
+            }
+
+            foreach (AnimationRunner runner in finishedAnims)
+            {
+                AnimsToRun.Remove(runner);
+            }
         }
     }
 }

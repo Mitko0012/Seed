@@ -9,7 +9,7 @@ public class STexture
     /// <summary>
     /// The source image of the texture;
     /// </summary>
-    public Image Image {get; private set;}
+    public Image Image { get; protected set; }
 
     /// <summary>
     /// Creates an instance of the STexture class.
@@ -18,7 +18,7 @@ public class STexture
     /// <param name="origin">The origin of the image.</param>
     public STexture(string texturePath, STextureOrigin origin)
     {
-        switch(origin)
+        switch (origin)
         {
             case STextureOrigin.FilePath:
                 Image = Image.FromFile(texturePath);
@@ -39,6 +39,15 @@ public class STexture
     public STexture(int width, int height)
     {
         Image = new Bitmap(width, height);
+    }
+
+    /// <summary>
+    /// Creates an instance of the STexture class with an image from another STexture.
+    /// </summary>
+    /// <param name="originTexture">The STexture whose image to use.</param>
+    public STexture(STexture originTexture)
+    {
+        Image = originTexture.Image;
     }
 }
 

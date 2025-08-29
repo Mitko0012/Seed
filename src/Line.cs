@@ -3,25 +3,57 @@ namespace Seed
     /// <summary>
     /// A line element.
     /// </summary>
-    public class Line:Element
+    public class Line : Element
     {
+        Pen _pen;
         /// <summary>
         /// The X position of the end point of the line in game units.
         /// </summary>
         public double EndPosX;
-        
+
         /// <summary>
         /// The Y position of the end point of the line in game units.
         /// </summary>
         public double EndPosY;
+        double _width;
         /// <summary>
         /// The width of the line in game units.
         /// </summary>
-        public double Width;
+        public double Width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
+                _pen?.Dispose();
+                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+            }
+        }
+
+        Color _color;
         /// <summary>
         /// The color of the line in game units.
         /// </summary>
-        public Color Color;
+        public Color Color
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                _color = value;
+                _pen?.Dispose();
+                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+            }
+        }
+
+        double _widthAtLastDraw = -1;
+        double _heightAtLastDraw = -1;
+        double _unitsAtLastDraw;
 
         /// <summary>
         /// Creates a new instance of the Line class.
@@ -40,6 +72,8 @@ namespace Seed
             EndPosY = endPosY;
             Width = width;
             Color = color;
+            _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
+            _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
         }
         /// <summary>
         /// Draws a line on the game window.
@@ -51,10 +85,42 @@ namespace Seed
             double MinY = Math.Min(EndPosY, PosY);
             double MaxY = Math.Max(EndPosY, PosY);
             Collider col = new Collider(MinX - PosX, MaxX - MinX, MinY - PosY, MaxY - MinY, this);
-            if(Collider.IsColliding(GameLogic.IsInScreenRect, col))
+            if (Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
-                Pen pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
-                GameLogic.G.DrawLine(pen, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky));
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                }
+                GameLogic.G.DrawLine(_pen, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky));
+                _widthAtLastDraw = GameLogic.Width;
+                _heightAtLastDraw = GameLogic.Height;
+                _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
+            }
+        }
+
+        public override void DrawOnSection(DrawingSection section)
+        {
+            double MinX = Math.Min(EndPosX, PosX);
+            double MaxX = Math.Max(EndPosX, PosX);
+            double MinY = Math.Min(EndPosY, PosY);
+            double MaxY = Math.Max(EndPosY, PosY);
+            Collider col = new Collider(MinX - PosX, MaxX - MinX, MinY - PosY, MaxY - MinY, this);
+            if (Collider.IsColliding(GameLogic.IsInScreenRect, col) && Collider.IsColliding(section, col))
+            {
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                {   
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                }
+                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
+                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
+                float neutralEndX = (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
+                float neutralEndY = (float)ScaleConverter.GameToNeutral(EndPosX, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
+                section.G.DrawLine(_pen, neutralX, neutralY, neutralEndX, neutralEndY);
+                _widthAtLastDraw = GameLogic.Width;
+                _heightAtLastDraw = GameLogic.Height;
+                _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
         }
     }

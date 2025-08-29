@@ -1,3 +1,4 @@
+using NAudio.MediaFoundation;
 using NAudio.Wave;
 
 namespace Seed
@@ -7,30 +8,34 @@ namespace Seed
     /// </summary>
     public class Sound
     {
-        WaveOutEvent outputDevice = new WaveOutEvent();
+        AudioFileReader soundFile;
+        WaveOutEvent _outputDevice = new WaveOutEvent();
         /// <summary>
         /// True if the sound is playing, otherwise false.
         /// </summary>
-        public bool IsPlaying {get; private set;}
-        string path;
+        public bool IsPlaying { get; private set; }
+        /// <summary>
+        /// True if the sound is paused, otherwise false.
+        /// </summary>
+        public bool IsPaused { get; private set; }
         /// <summary>
         /// True if the sound should loop after it finishes, otherwise false.
         /// </summary>
-        public bool Looping {get; set;}
+        public bool Looping { get; set; }
         /// <summary>
         /// Shows the volume of the sound.
         /// </summary>
-        public float Volume {get; private set;}
-        
+        public float Volume { get; private set; }
+
         /// <summary>
         /// Sets the volume of the sound.
         /// </summary>
         /// <param name="vol">The value to be set as the volume of the sound. A float between 0 and 1.</param>
         public void SetVolume(float vol)
         {
-            if(vol > 0 && vol < 1)
+            if (vol >= 0 && vol <= 1)
             {
-                outputDevice.Volume = vol;
+                _outputDevice.Volume = vol;
                 Volume = vol;
             }
         }
@@ -42,7 +47,9 @@ namespace Seed
         /// <param name="looping">True if the sound should loop, otherwise false.</param>
         public Sound(string path, float volume, bool looping)
         {
-            this.path = path;
+            _outputDevice.PlaybackStopped += PlaybackStopped;
+            soundFile = new AudioFileReader(path);
+            _outputDevice.Init(soundFile);
             SetVolume(volume);
             this.Looping = looping;
         }
@@ -52,29 +59,23 @@ namespace Seed
         /// </summary>
         public void Play()
         {
-            Thread startThread = new Thread(StartSound);
-            AudioFileReader soundFile = new AudioFileReader(path);
-            IsPlaying = true;
-            outputDevice.Init(soundFile);
-            outputDevice.Play();
-            startThread.Start();
+            if (!IsPlaying)
+            {
+                _outputDevice.Play();
+                IsPlaying = true;
+            }
         }
 
-        private void StartSound()
+        private void PlaybackStopped(object? sender, EventArgs args)
         {
-            while(outputDevice.PlaybackState == PlaybackState.Playing && IsPlaying)
+            soundFile.Position = 0;
+            if (Looping && IsPlaying)
             {
-                Thread.Sleep(1);
-            }
-            if(Looping && IsPlaying)
-            {
-                this.Play();
-            }
-            else
-            {
-                outputDevice.Stop();
                 IsPlaying = false;
+                Play();
             }
+            else 
+                IsPlaying = false;
         }
 
         /// <summary>
@@ -82,16 +83,37 @@ namespace Seed
         /// </summary>
         public void Stop()
         {
-            this.IsPlaying = false;
+            if (IsPlaying)
+            {
+                IsPlaying = false;
+                IsPaused = false;
+                _outputDevice.Stop();
+                IsPlaying = false;
+            }
         }
 
         /// <summary>
-        /// Changes the volume of the sound.
+        /// Pauses the sound.
         /// </summary>
-        /// <param name="vol">Value to be set as the volume.</param>
-        public void ChangeVolume(float vol)
+        public void Pause()
         {
-            outputDevice.Volume = vol;
+            if (IsPlaying && !IsPaused)
+            {
+                IsPaused = true;
+                _outputDevice.Pause();
+            }
+        }
+
+        /// <summary>
+        /// Resumes the sound.
+        /// </summary>
+        public void Resume()
+        {
+            if (IsPlaying && IsPaused)
+            {
+                IsPaused = false;
+                _outputDevice.Play();
+            }
         }
     }
 }

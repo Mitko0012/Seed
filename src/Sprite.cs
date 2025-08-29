@@ -45,7 +45,15 @@ namespace Seed
                 GameLogic.G.TranslateTransform(neutralX + neutralRotationX, neutralY + neutralRotationY);
                 GameLogic.G.RotateTransform((float)Angle);
                 GameLogic.G.TranslateTransform(-(neutralX + neutralRotationX), -(neutralY + neutralRotationY));
-                GameLogic.G.DrawImage(Texture.Image, neutralX, neutralY, neutralWidth, neutralHeight);
+                if (Texture.GetType() == typeof(SectionedSTexture))
+                {
+                    SectionedSTexture sectionedSTexture = (SectionedSTexture)Texture;
+                    Rectangle destinationRect = new Rectangle((int)neutralX, (int)neutralY, (int)neutralWidth, (int)neutralHeight);
+                    Rectangle sourceRect = new Rectangle(sectionedSTexture.OriginX, sectionedSTexture.OriginY, sectionedSTexture.Width, sectionedSTexture.Height);
+                    GameLogic.G.DrawImage(sectionedSTexture.Image, destinationRect, sourceRect, GraphicsUnit.Pixel);
+                }
+                else
+                    GameLogic.G.DrawImage(Texture.Image, neutralX, neutralY, neutralWidth, neutralHeight);
                 GameLogic.G.Restore(state);
             }
         }

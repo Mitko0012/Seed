@@ -12,10 +12,7 @@ namespace Seed
         static Color backgroundColor = Color.White;
         private static GameWindow window = new GameWindow(800, 600);
         static Bitmap secondBuffer = new Bitmap(window.Width, window.Height);
-        /// <summary>
-        /// Object that is used to draw elements on the game window.
-        /// </summary>
-        public static Graphics G = Graphics.FromImage(secondBuffer);
+        internal static Graphics G = Graphics.FromImage(secondBuffer);
         static Graphics? gWindow;
         static int desiredFps = 60;
         static bool isRunning = false;
@@ -33,12 +30,20 @@ namespace Seed
         /// <summary>
         /// The width of the game window in pixels. 800 by default.
         /// </summary>
-        public static int Width {get; private set;} = window.Width;
+        public static int Width {get; private set;} = secondBuffer.Width;
         /// <summary>
         /// The height of the game window in pixels. 600 by default.
         /// </summary>
-        public static int Height {get; private set;} = window.Height - (screenRectangle.Top - window.Top) - 8;
-        
+        public static int Height {get; private set;} = secondBuffer.Height - (screenRectangle.Top - window.Top) - 8;
+        static Size _previousSize;
+        /// <summary>
+        /// Whether the engine should use a maximum render size.
+        /// </summary>
+        public static bool UseMaximumSize;
+        /// <summary>
+        /// The maximum render size of either axel. The other one will get scaled relatively based on the screen ratio.
+        /// </summary>
+        public static int MaximumSize;
         private static bool isFullScreen = false;
 
         /// <summary>
@@ -140,13 +145,23 @@ namespace Seed
             long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             while(true)
             {
+                stopwatch.Start();
                 screenRectangle = window.Invoke(() => window.RectangleToScreen(window.ClientRectangle));
                 Brush brush = new SolidBrush(backgroundColor);
-                Width = window.Width;
-                Height = window.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0? 0 : 8);
-                if(secondBuffer.Size != window.Size || gWindow == null)
+                if (_previousSize != window.Size || gWindow == null)
                 {
-                    secondBuffer = new Bitmap(window.Width, window.Height);
+                    if (UseMaximumSize && Math.Max(window.Width, window.Height) > MaximumSize)
+                    {
+                        double ratio = (double)MaximumSize / Math.Max(window.Width, window.Height);
+                        secondBuffer = new Bitmap((int)(window.Width * ratio), (int)(window.Height * ratio));
+                        Height = secondBuffer.Height - (int)(ratio * (screenRectangle.Top - window.Top)) - (screenRectangle.Top - window.Top == 0 ? 0 : (int)(8 * ratio));
+                    }
+                    else
+                    {
+                        secondBuffer = new Bitmap(window.Width, window.Height);
+                        Height = secondBuffer.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0 ? 0 : 8);
+                    }
+                    Width = secondBuffer.Width;
                     G = Graphics.FromImage(secondBuffer);
                     gWindow = window.Invoke(() => window.CreateGraphics());
                     G.InterpolationMode = InterpolationMode.NearestNeighbor;
@@ -156,20 +171,24 @@ namespace Seed
                     gWindow.SmoothingMode = SmoothingMode.HighSpeed;
                     gWindow.CompositingQuality = CompositingQuality.HighSpeed;
                     IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
+                    _previousSize = new Size(window.Width, window.Height);
                 }
+                Width = secondBuffer.Width;
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
                 timeAtLastFrameMillis = timeNowMillis;
-                G.FillRectangle(brush, 0, 0, Width, Height);
+                Animation.CheckAnimations();
+                G.FillRectangle(brush, 0, 0, window.Width, window.Height);
                 foreach(GameLogic script in scripts)
                 {
                     script.OnFrame();
                 }
                  if(_lastCameraX != Camera.PosX || _lastCameraY != Camera.PosY)
                     IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
-                gWindow.DrawImage(secondBuffer, Point.Empty);
+                gWindow.DrawImage(secondBuffer, 0, 0, window.Width, window.Height);
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 long timeItTook = stopwatch.ElapsedMilliseconds;
+                stopwatch.Reset();
                 long waitTime = 1000/DesiredFps - timeItTook;
                 _lastCameraX = Camera.PosX;
                 _lastCameraY = Camera.PosY;

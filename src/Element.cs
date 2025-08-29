@@ -13,7 +13,7 @@ namespace Seed
         /// The Y position of the element in game units.
         /// </summary>
         public double PosY;
-        
+
         /// <summary>
         /// True if the element should be sticky(independent on the camera positionm), false if not.
         /// </summary>
@@ -21,6 +21,10 @@ namespace Seed
         /// <summary>
         /// Draws the element on the game window. 
         /// </summary>
-        public virtual void Draw(){}
+        public virtual void Draw() { }
+        /// <summary>
+        /// Draws the element on a drawing section. 
+        /// </summary>
+        public virtual void DrawOnSection(DrawingSection section) {}
     }
 }
