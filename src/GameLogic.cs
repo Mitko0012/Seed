@@ -50,6 +50,7 @@ namespace Seed
         /// A list of STextures that represents the tile map textures. The item with index 0 is an empty STexture.
         /// </summary>
         public static List<STexture> TileTextures = new List<STexture>(){new STexture(1, 1)};
+        static Brush _backgroundBrush;
 
         /// <summary>
         /// The desired FPS of the game. 60 by default.
@@ -57,7 +58,7 @@ namespace Seed
         /// <exception cref="InvalidDataException">
         /// Thrown when the value is attempted to be set to 0 or less.
         /// </exception>
-        public static int DesiredFps 
+        public static int DesiredFps
         {
             get
             {
@@ -86,11 +87,7 @@ namespace Seed
         /// The time between the current and last frame.
         /// </summary>
         static public double DeltaTime {get; private set;}
-        
-        /// <summary>
-        /// Rectangle that stretches the entire screen. It is used to determine if an element is in the screen and should it be drawn.
-        /// </summary>
-        public static FullRectangle? IsInScreenRect;
+        internal static FullRectangle? IsInScreenRect { get; private set; }
         
         /// <summary>
         /// Called when the game loop starts. It has to be overriden. It can be used to provide code to be executed when the game loop is started.
@@ -135,6 +132,7 @@ namespace Seed
 
         static void CallUpdate()
         {
+            _backgroundBrush = new SolidBrush(backgroundColor);
             Task.Delay(3);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -147,7 +145,6 @@ namespace Seed
             {
                 stopwatch.Start();
                 screenRectangle = window.Invoke(() => window.RectangleToScreen(window.ClientRectangle));
-                Brush brush = new SolidBrush(backgroundColor);
                 if (_previousSize != window.Size || gWindow == null)
                 {
                     if (UseMaximumSize && Math.Max(window.Width, window.Height) > MaximumSize)
@@ -178,7 +175,7 @@ namespace Seed
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
                 timeAtLastFrameMillis = timeNowMillis;
                 Animation.CheckAnimations();
-                G.FillRectangle(brush, 0, 0, window.Width, window.Height);
+                G.FillRectangle(_backgroundBrush, 0, 0, window.Width, window.Height);
                 foreach(GameLogic script in scripts)
                 {
                     script.OnFrame();
@@ -331,6 +328,8 @@ namespace Seed
         public static void SetColor(Color color)
         {
             backgroundColor = color;
+            _backgroundBrush?.Dispose();
+            _backgroundBrush = new SolidBrush(backgroundColor);
         }
 
         /// <summary>
