@@ -21,8 +21,11 @@ namespace Seed
             set
             {
                 _color = value;
-                _pen?.Dispose();
-                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));
+                if (_pen != null)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));
+                }
             }
         }
         double _rectangleWidth;
@@ -38,8 +41,11 @@ namespace Seed
             set
             {
                 _rectangleWidth = value;
-                _pen?.Dispose();
-                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));
+                if (_pen != null)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));
+                }
             }
         }
 
@@ -64,7 +70,6 @@ namespace Seed
             Height = height;
             Color = color;
             RectangleWidth = rectangleWidth;
-            _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));
         }
 
         /// <summary>
@@ -74,7 +79,7 @@ namespace Seed
         {
             if (Collider.IsColliding(this, GameLogic.IsInScreenRect))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
                     _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));
@@ -101,7 +106,7 @@ namespace Seed
         {
             if (Collider.IsColliding(this, section) && Collider.IsColliding(this, GameLogic.IsInScreenRect))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
                     _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(RectangleWidth, false, false, IsSticky));

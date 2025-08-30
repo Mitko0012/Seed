@@ -21,8 +21,11 @@ namespace Seed
             set
             {
                 _ovalWidth = value;
-                _pen?.Dispose();
-                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                if (_pen != null)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                }
             }
         }
         Color _color;
@@ -38,8 +41,11 @@ namespace Seed
             set
             {
                 _color = value;
-                _pen?.Dispose();
-                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                if (_pen != null)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                }
             }
         }
         int _widthAtLastDraw = -1;
@@ -63,7 +69,6 @@ namespace Seed
             Color = color;
             OvalWidth = ellipseWidth;
             _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
-            _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
         }
         /// <summary>
         /// Draws an empty ellipse on the game window.
@@ -72,7 +77,7 @@ namespace Seed
         {
             if (Collider.IsColliding(this, GameLogic.IsInScreenRect))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
                     _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
@@ -99,7 +104,7 @@ namespace Seed
         {
             if (Collider.IsColliding(this, section) && Collider.IsColliding(this, GameLogic.IsInScreenRect))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
                     _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));

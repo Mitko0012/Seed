@@ -5,7 +5,7 @@ namespace Seed
     /// </summary>
     public class Text : Element
     {
-        Brush _brush = new SolidBrush(Color.Black);
+        Brush _brush;
 
         Color _color;
         /// <summary>
@@ -20,8 +20,11 @@ namespace Seed
             set
             {
                 _color = value;
-                _brush.Dispose();
-                _brush = new SolidBrush(value);
+                if (_brush != null)
+                {
+                    _brush?.Dispose();
+                    _brush = new SolidBrush(value);
+                }
             }
         }
         /// <summary>
@@ -50,10 +53,13 @@ namespace Seed
             set
             {
                 _fontString = value;
-                _font?.Dispose();
-                float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
-                if (neutralSize != 0)
-                    _font = new Font(Font, neutralSize);
+                if (_font != null)
+                {
+                    _font?.Dispose();
+                    float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+                    if (neutralSize != 0)
+                        _font = new Font(Font, neutralSize);   
+                }
             }
         }
         double _size = 0;
@@ -70,9 +76,13 @@ namespace Seed
             {
                 _size = value;
                 _font?.Dispose();
-                float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
-                if (neutralSize != 0)
-                    _font = new Font(Font, neutralSize);
+                if (_font != null)
+                {
+                    _font?.Dispose();
+                    float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+                    if (neutralSize != 0)
+                        _font = new Font(Font, neutralSize);   
+                }
             }
         }
 
@@ -106,7 +116,6 @@ namespace Seed
             DisplayText = text;
             Color = Color.Black;
             _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
-            _font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
         }
 
         /// <summary>
@@ -138,10 +147,13 @@ namespace Seed
             float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
             if (neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _font == null || _brush == null)
                 {
+                    _brush?.Dispose();
+                    _brush = new SolidBrush(Color);
                     _font?.Dispose();
-                    _font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
+                    if (neutralSize != 0)
+                        _font = new Font(Font, neutralSize);  
                 }
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;
@@ -178,10 +190,13 @@ namespace Seed
             float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
             if (neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col) && Collider.IsColliding(section, col))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _font == null || _brush == null)
                 {
+                    _brush?.Dispose();
+                    _brush = new SolidBrush(Color);
                     _font?.Dispose();
-                    _font = new Font(Font, (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky));
+                    if (neutralSize != 0)
+                        _font = new Font(Font, neutralSize);  
                 }
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;

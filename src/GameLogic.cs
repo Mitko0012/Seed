@@ -150,11 +150,13 @@ namespace Seed
                     if (UseMaximumSize && Math.Max(window.Width, window.Height) > MaximumSize)
                     {
                         double ratio = (double)MaximumSize / Math.Max(window.Width, window.Height);
+                        secondBuffer?.Dispose();
                         secondBuffer = new Bitmap((int)(window.Width * ratio), (int)(window.Height * ratio));
                         Height = secondBuffer.Height - (int)(ratio * (screenRectangle.Top - window.Top)) - (screenRectangle.Top - window.Top == 0 ? 0 : (int)(8 * ratio));
                     }
                     else
                     {
+                        secondBuffer?.Dispose();
                         secondBuffer = new Bitmap(window.Width, window.Height);
                         Height = secondBuffer.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0 ? 0 : 8);
                     }

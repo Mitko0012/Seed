@@ -20,15 +20,15 @@ public class DrawingSection : CollidableElement
         if (_widthAtLastReset != Width || _heightAtLastReset != Height || _unitsAtLastReset != GameLogic.UnitsOnCanvas)
         {
             _bitmap?.Dispose();
-            _bitmap = new Bitmap((int)ScaleConverter.GameToNeutral(Width, false, false, false), (int)ScaleConverter.GameToNeutral(Width, false, false, false));
+            _bitmap = new Bitmap((int)ScaleConverter.GameToNeutral(Width, false, false, false), (int)ScaleConverter.GameToNeutral(Height, false, false, false));
             G = Graphics.FromImage(_bitmap);
         }
         else
         {
             G.Clear(Color.Transparent);
         }
-        _widthAtLastReset = Width;
-        _heightAtLastReset = Height;
+        _widthAtLastReset = GameLogic.Width;
+        _heightAtLastReset = GameLogic.Height;
         _unitsAtLastReset = GameLogic.UnitsOnCanvas;
     }
 

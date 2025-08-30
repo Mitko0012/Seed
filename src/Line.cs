@@ -28,8 +28,11 @@ namespace Seed
             set
             {
                 _width = value;
-                _pen?.Dispose();
-                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                if (_pen != null)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                }
             }
         }
 
@@ -46,8 +49,11 @@ namespace Seed
             set
             {
                 _color = value;
-                _pen?.Dispose();
-                _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                if (_pen != null)
+                {
+                    _pen?.Dispose();
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                }
             }
         }
 
@@ -73,7 +79,6 @@ namespace Seed
             Width = width;
             Color = color;
             _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
-            _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
         }
         /// <summary>
         /// Draws a line on the game window.
@@ -87,7 +92,7 @@ namespace Seed
             Collider col = new Collider(MinX - PosX, MaxX - MinX, MinY - PosY, MaxY - MinY, this);
             if (Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
                     _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
@@ -108,7 +113,7 @@ namespace Seed
             Collider col = new Collider(MinX - PosX, MaxX - MinX, MinY - PosY, MaxY - MinY, this);
             if (Collider.IsColliding(GameLogic.IsInScreenRect, col) && Collider.IsColliding(section, col))
             {
-                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas)
+                if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {   
                     _pen?.Dispose();
                     _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));

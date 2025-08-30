@@ -7,7 +7,7 @@ namespace Seed
     /// </summary>
     public class FullRectangle : CollidableElement
     {
-        Brush _brush = new SolidBrush(Color.Black);
+        Brush _brush;
         Color _backgroundColor;
         /// <summary>
         /// The color of the rectangle.
@@ -21,8 +21,11 @@ namespace Seed
             set
             {
                 _backgroundColor = value;
-                _brush.Dispose();
-                _brush = new SolidBrush(value);
+                if (_brush != null)
+                {
+                    _brush?.Dispose();
+                    _brush = new SolidBrush(value);
+                }  
             }
         }
 
@@ -42,7 +45,6 @@ namespace Seed
             Width = width;
             Height = height;
             BackgroundColor = color;
-            _brush = new SolidBrush(color);
         }
 
         /// <summary>
@@ -52,6 +54,10 @@ namespace Seed
         {
             if (Collider.IsColliding(this, GameLogic.IsInScreenRect))
             {
+                if (_brush == null)
+                {
+                    _brush = new SolidBrush(_backgroundColor);
+                }
                 float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky);
                 float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky);
                 float neutralRotationX = (float)ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky);
@@ -71,6 +77,10 @@ namespace Seed
         {
             if (Collider.IsColliding(this, section) && Collider.IsColliding(this, GameLogic.IsInScreenRect))
             {
+                if (_brush == null)
+                {
+                    _brush = new SolidBrush(_backgroundColor);
+                }
                 float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
                 float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
                 float neutralRotationX = (float)ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky);
