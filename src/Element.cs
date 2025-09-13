@@ -3,7 +3,7 @@ namespace Seed
     /// <summary>
     /// The class from which each game element class derives.
     /// </summary>
-    public abstract class Element
+    public abstract class Element : IDisposable
     {
         /// <summary>
         /// The X position of the element in game units.
@@ -25,6 +25,10 @@ namespace Seed
         /// <summary>
         /// Draws the element on a drawing section. 
         /// </summary>
-        public virtual void DrawOnSection(DrawingSection section) {}
+        public virtual void DrawOnSection(DrawingSection section) { }
+        /// <summary>
+        /// Disposes the resources used by this element.
+        /// </summary>
+        public virtual void Dispose() {}
     }
 }

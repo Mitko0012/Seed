@@ -9,6 +9,7 @@ namespace Seed
     /// </summary>
     public abstract class GameLogic
     {
+        const int ExtraHeight = 8;
         static Color backgroundColor = Color.White;
         private static GameWindow window = new GameWindow(800, 600);
         static Bitmap secondBuffer = new Bitmap(window.Width, window.Height);
@@ -21,21 +22,30 @@ namespace Seed
         /// <summary>
         /// The count of the frames that have been sucessfully rendered. The value of it is 0 at the start. It increases by 1 with each sucessfully rendered frame.
         /// </summary>
-        public static int FrameNumber {get; private set;} = 0;
+        public static uint FrameNumber {get; private set;} = 0;
 
         /// <summary>
         /// The number of game units currently present on the game window. 10 by default.
         /// </summary>
         public static double UnitsOnCanvas = 10;
         /// <summary>
-        /// The width of the game window in pixels. 800 by default.
+        /// The width of the drawing buffer in pixels. 800 by default.
         /// </summary>
         public static int Width {get; private set;} = secondBuffer.Width;
         /// <summary>
+        /// The height of the drawing buffer in pixels. 600 by default.
+        /// </summary>
+        public static int Height {get; private set;} = secondBuffer.Height - (screenRectangle.Top - window.Top) - ExtraHeight;
+        /// <summary>
+        /// The width of the game window in pixels. 800 by default.
+        /// </summary>
+        public static int WindowWidth {get; private set;} = window.Width;
+        /// <summary>
         /// The height of the game window in pixels. 600 by default.
         /// </summary>
-        public static int Height {get; private set;} = secondBuffer.Height - (screenRectangle.Top - window.Top) - 8;
+        public static int WindowHeight {get; private set;} = window.Height - (screenRectangle.Top - window.Top) - ExtraHeight;
         static Size _previousSize;
+        static bool _previousUseMaxSize;
         /// <summary>
         /// Whether the engine should use a maximum render size.
         /// </summary>
@@ -49,7 +59,7 @@ namespace Seed
         /// <summary>
         /// A list of STextures that represents the tile map textures. The item with index 0 is an empty STexture.
         /// </summary>
-        public static List<STexture> TileTextures = new List<STexture>(){new STexture(1, 1)};
+        public static List<STexture> TileTextures = new List<STexture>() { new STexture(1, 1) };
         static Brush _backgroundBrush;
 
         /// <summary>
@@ -126,7 +136,7 @@ namespace Seed
             Thread startWindow = new Thread(() => Application.Run(window));
             startWindow.Start();
             isRunning = true;
-            IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
+            IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false, false), ScaleConverter.NeutralToGame(0, true, false, false, false), ScaleConverter.NeutralToGame(Width, false, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false, false), Color.FromArgb(0, 0, 0));
             CallUpdate();
         }
 
@@ -141,26 +151,28 @@ namespace Seed
                 script.OnStart();
             }
             long timeAtLastFrameMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            while(true)
+            while (true)
             {
                 stopwatch.Start();
                 screenRectangle = window.Invoke(() => window.RectangleToScreen(window.ClientRectangle));
-                if (_previousSize != window.Size || gWindow == null)
+                if (_previousSize != window.Size || _previousUseMaxSize != UseMaximumSize || gWindow == null)
                 {
                     if (UseMaximumSize && Math.Max(window.Width, window.Height) > MaximumSize)
                     {
                         double ratio = (double)MaximumSize / Math.Max(window.Width, window.Height);
                         secondBuffer?.Dispose();
                         secondBuffer = new Bitmap((int)(window.Width * ratio), (int)(window.Height * ratio));
-                        Height = secondBuffer.Height - (int)(ratio * (screenRectangle.Top - window.Top)) - (screenRectangle.Top - window.Top == 0 ? 0 : (int)(8 * ratio));
+                        Height = secondBuffer.Height - (int)(ratio * (screenRectangle.Top - window.Top)) - (screenRectangle.Top - window.Top == 0 ? 0 : (int)(ExtraHeight * ratio));
                     }
                     else
                     {
                         secondBuffer?.Dispose();
                         secondBuffer = new Bitmap(window.Width, window.Height);
-                        Height = secondBuffer.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0 ? 0 : 8);
+                        Height = secondBuffer.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0 ? 0 : ExtraHeight);
                     }
                     Width = secondBuffer.Width;
+                    WindowWidth = window.Width;
+                    WindowHeight = window.Height - (screenRectangle.Top - window.Top) - (screenRectangle.Top - window.Top == 0 ? 0 : ExtraHeight);
                     G = Graphics.FromImage(secondBuffer);
                     gWindow = window.Invoke(() => window.CreateGraphics());
                     G.InterpolationMode = InterpolationMode.NearestNeighbor;
@@ -169,10 +181,10 @@ namespace Seed
                     G.CompositingQuality = CompositingQuality.HighSpeed;
                     gWindow.SmoothingMode = SmoothingMode.HighSpeed;
                     gWindow.CompositingQuality = CompositingQuality.HighSpeed;
-                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
+                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false, false), ScaleConverter.NeutralToGame(0, true, false, false, false), ScaleConverter.NeutralToGame(Width, false, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false, false), Color.FromArgb(0, 0, 0));
                     _previousSize = new Size(window.Width, window.Height);
+                    _previousUseMaxSize = UseMaximumSize;
                 }
-                Width = secondBuffer.Width;
                 long timeNowMillis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 DeltaTime = (timeNowMillis - timeAtLastFrameMillis) / 1000.0;
                 timeAtLastFrameMillis = timeNowMillis;
@@ -183,7 +195,7 @@ namespace Seed
                     script.OnFrame();
                 }
                  if(_lastCameraX != Camera.PosX || _lastCameraY != Camera.PosY)
-                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false), ScaleConverter.NeutralToGame(0, true, false, false), ScaleConverter.NeutralToGame(Width, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false), Color.FromArgb(0, 0, 0));
+                    IsInScreenRect = new FullRectangle(ScaleConverter.NeutralToGame(0, true, true, false, false), ScaleConverter.NeutralToGame(0, true, false, false, false), ScaleConverter.NeutralToGame(Width, false, false, false, false), ScaleConverter.NeutralToGame(Height, false, false, false, false), Color.FromArgb(0, 0, 0));
                 gWindow.DrawImage(secondBuffer, 0, 0, window.Width, window.Height);
                 long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 long timeItTook = stopwatch.ElapsedMilliseconds;
@@ -192,7 +204,7 @@ namespace Seed
                 _lastCameraX = Camera.PosX;
                 _lastCameraY = Camera.PosY;
                 FrameNumber++;
-                if(waitTime > 0)    
+                if (waitTime > 0)
                 {
                     Thread.Sleep((int)waitTime);
                 }

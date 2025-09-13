@@ -35,7 +35,7 @@ public class Tilemap : Element
                 FullRectangle rect = new FullRectangle(currX, currY, Scale, Scale, Color.FromArgb(0, 0, 0));
                 if (Collider.IsColliding(rect, GameLogic.IsInScreenRect))
                 {
-                    GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, (float)ScaleConverter.GameToNeutral(currX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(currY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, true, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, false, IsSticky));
+                    GameLogic.G.DrawImage(GameLogic.TileTextures[tile].Image, (float)ScaleConverter.GameToNeutral(currX, true, true, IsSticky, false), (float)ScaleConverter.GameToNeutral(currY, true, false, IsSticky, false), (float)ScaleConverter.GameToNeutral(Scale, false, true, IsSticky, false), (float)ScaleConverter.GameToNeutral(Scale, false, false, IsSticky, false));
                 }
                 currX++;
             }
@@ -43,7 +43,11 @@ public class Tilemap : Element
             currY++;
         }
     }
-
+    
+    /// <summary>
+    /// Draws the tile map on a DrawingSection.
+    /// </summary>
+    /// <param name="section">The section for the tile map to be drawn on.</param>
     public override void DrawOnSection(DrawingSection section)
     {
         double currX = PosX;
@@ -55,14 +59,14 @@ public class Tilemap : Element
                 FullRectangle rect = new FullRectangle(currX, currY, Scale, Scale, Color.FromArgb(0, 0, 0));
                 if (Collider.IsColliding(rect, GameLogic.IsInScreenRect) && Collider.IsColliding(rect, section))
                 {
-                    float neutralX = (float)ScaleConverter.GameToNeutral(currX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
-                    float neutralY = (float)ScaleConverter.GameToNeutral(currY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
-                    section.G.DrawImage(GameLogic.TileTextures[tile].Image, neutralX, neutralY, (float)ScaleConverter.GameToNeutral(Scale, false, true, IsSticky), (float)ScaleConverter.GameToNeutral(Scale, false, false, IsSticky));
+                    float neutralX = (float)ScaleConverter.GameToNeutral(currX, true, true, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky, false);
+                    float neutralY = (float)ScaleConverter.GameToNeutral(currY, true, false, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky, false);
+                    section.G.DrawImage(GameLogic.TileTextures[tile].Image, neutralX, neutralY, (float)ScaleConverter.GameToNeutral(Scale, false, true, IsSticky, false), (float)ScaleConverter.GameToNeutral(Scale, false, false, IsSticky, false));
                 }
                 currX++;
             }
             currX = PosX;
             currY++;
         }
-    }           
+    }
 }

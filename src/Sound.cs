@@ -7,31 +7,48 @@ namespace Seed
     /// </summary>
     public class Sound
     {
-        WaveOutEvent outputDevice = new WaveOutEvent();
+        WaveOutEvent _outputDevice = new WaveOutEvent();
+        AudioFileReader _soundFile;
+        private bool _isPlaying;
         /// <summary>
         /// True if the sound is playing, otherwise false.
         /// </summary>
-        public bool IsPlaying {get; private set;}
-        string path;
-        /// <summary>
-        /// True if the sound should loop after it finishes, otherwise false.
-        /// </summary>
-        public bool Looping {get; set;}
-        /// <summary>
-        /// Shows the volume of the sound.
-        /// </summary>
-        public float Volume {get; private set;}
-        
-        /// <summary>
-        /// Sets the volume of the sound.
-        /// </summary>
-        /// <param name="vol">The value to be set as the volume of the sound. A float between 0 and 1.</param>
-        public void SetVolume(float vol)
+        public bool IsPlaying
         {
-            if(vol > 0 && vol < 1)
+            get
             {
-                outputDevice.Volume = vol;
-                Volume = vol;
+                if (_isPlaying && _outputDevice.PlaybackState == PlaybackState.Stopped)
+                {
+                    _outputDevice.Stop();
+                    _soundFile.Position = 0;
+                    _isPlaying = false;
+                }
+
+                return _isPlaying;
+            }
+            private set
+            {
+                _isPlaying = value;
+            }
+        }
+        string path;
+        private float _volume = 1;
+        /// <summary>
+        /// Gets or sets the volume of the sound.
+        /// </summary>
+        public float Volume
+        {
+            get
+            {
+                return _volume;
+            }
+            set
+            {
+                if (value <= 1 && value >= 0)
+                {
+                    _volume = value;
+                    _outputDevice.Volume = value;
+                }
             }
         }
         /// <summary>
@@ -39,12 +56,12 @@ namespace Seed
         /// </summary>
         /// <param name="path">The filepath of the sound file.</param>
         /// <param name="volume">The volume of the sound. A float between 0 and 1.</param>
-        /// <param name="looping">True if the sound should loop, otherwise false.</param>
-        public Sound(string path, float volume, bool looping)
+
+        public Sound(string path, float volume)
         {
             this.path = path;
-            SetVolume(volume);
-            this.Looping = looping;
+            _soundFile = new AudioFileReader(path);
+            _outputDevice.Init(_soundFile);
         }
 
         /// <summary>
@@ -52,28 +69,10 @@ namespace Seed
         /// </summary>
         public void Play()
         {
-            Thread startThread = new Thread(StartSound);
-            AudioFileReader soundFile = new AudioFileReader(path);
-            IsPlaying = true;
-            outputDevice.Init(soundFile);
-            outputDevice.Play();
-            startThread.Start();
-        }
-
-        private void StartSound()
-        {
-            while(outputDevice.PlaybackState == PlaybackState.Playing && IsPlaying)
+            if (!IsPlaying)
             {
-                Thread.Sleep(1);
-            }
-            if(Looping && IsPlaying)
-            {
-                this.Play();
-            }
-            else
-            {
-                outputDevice.Stop();
-                IsPlaying = false;
+                IsPlaying = true;
+                _outputDevice.Play();
             }
         }
 
@@ -82,16 +81,9 @@ namespace Seed
         /// </summary>
         public void Stop()
         {
-            this.IsPlaying = false;
-        }
-
-        /// <summary>
-        /// Changes the volume of the sound.
-        /// </summary>
-        /// <param name="vol">Value to be set as the volume.</param>
-        public void ChangeVolume(float vol)
-        {
-            outputDevice.Volume = vol;
+            _outputDevice.Stop();
+            _soundFile.Position = 0;
+            IsPlaying = false;
         }
     }
 }

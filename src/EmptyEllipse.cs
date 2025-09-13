@@ -24,7 +24,7 @@ namespace Seed
                 if (_pen != null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky, false));
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace Seed
                 if (_pen != null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky, false));
                 }
             }
         }
@@ -71,7 +71,7 @@ namespace Seed
             _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
         }
         /// <summary>
-        /// Draws an empty ellipse on the game window.
+        /// Draws the empty ellipse on the game window.
         /// </summary>
         public override void Draw()
         {
@@ -80,14 +80,14 @@ namespace Seed
                 if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky, false));
                 }
-                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky);
-                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky);
-                float neutralRotationX = (float)ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky);
-                float neutralRotationY = (float)ScaleConverter.GameToNeutral(RotationCenterY, false, true, IsSticky);
-                float neutralWidth = (float)ScaleConverter.GameToNeutral(Width, false, true, IsSticky);
-                float neutralHeight = (float)ScaleConverter.GameToNeutral(Height, false, true, IsSticky);
+                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky, false);
+                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky, false);
+                float neutralRotationX = (float)ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky, false);
+                float neutralRotationY = (float)ScaleConverter.GameToNeutral(RotationCenterY, false, true, IsSticky, false);
+                float neutralWidth = (float)ScaleConverter.GameToNeutral(Width, false, true, IsSticky, false);
+                float neutralHeight = (float)ScaleConverter.GameToNeutral(Height, false, true, IsSticky, false);
                 GraphicsState state = GameLogic.G.Save();
                 GameLogic.G.TranslateTransform(neutralX + neutralRotationX, neutralY + neutralRotationY);
                 GameLogic.G.RotateTransform((float)Angle);
@@ -100,6 +100,10 @@ namespace Seed
             }
         }
 
+        /// <summary>
+        /// Draws the empty ellipse on a DrawingSection.
+        /// </summary>
+        /// <param name="section">The section for the ellipse to be drawn on.</param>
         public override void DrawOnSection(DrawingSection section)
         {
             if (Collider.IsColliding(this, section) && Collider.IsColliding(this, GameLogic.IsInScreenRect))
@@ -107,14 +111,14 @@ namespace Seed
                 if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(OvalWidth, false, false, IsSticky, false));
                 }
-                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
-                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
-                float neutralRotationX = (float)ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky);
-                float neutralRotationY = (float)ScaleConverter.GameToNeutral(RotationCenterY, false, true, IsSticky);
-                float neutralWidth = (float)ScaleConverter.GameToNeutral(Width, false, true, IsSticky);
-                float neutralHeight = (float)ScaleConverter.GameToNeutral(Height, false, true, IsSticky);
+                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky, false);
+                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky, false);
+                float neutralRotationX = (float)ScaleConverter.GameToNeutral(RotationCenterX, false, true, IsSticky, false);
+                float neutralRotationY = (float)ScaleConverter.GameToNeutral(RotationCenterY, false, true, IsSticky, false);
+                float neutralWidth = (float)ScaleConverter.GameToNeutral(Width, false, true, IsSticky, false);
+                float neutralHeight = (float)ScaleConverter.GameToNeutral(Height, false, true, IsSticky, false);
                 GraphicsState state = section.G.Save();
                 section.G.TranslateTransform(neutralX + neutralRotationX, neutralY + neutralRotationY);
                 section.G.RotateTransform((float)Angle);
@@ -125,6 +129,14 @@ namespace Seed
                 _heightAtLastDraw = GameLogic.Height;
                 _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
+        }
+
+        /// <summary>
+        /// Disposes the resources used by this empty ellipse.
+        /// </summary>
+        public override void Dispose()
+        {
+            _pen.Dispose();
         }
     }
 }

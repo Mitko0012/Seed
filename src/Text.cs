@@ -56,9 +56,9 @@ namespace Seed
                 if (_font != null)
                 {
                     _font?.Dispose();
-                    float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+                    float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky, false);
                     if (neutralSize != 0)
-                        _font = new Font(Font, neutralSize);   
+                        _font = new Font(Font, neutralSize);
                 }
             }
         }
@@ -79,9 +79,9 @@ namespace Seed
                 if (_font != null)
                 {
                     _font?.Dispose();
-                    float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+                    float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky, false);
                     if (neutralSize != 0)
-                        _font = new Font(Font, neutralSize);   
+                        _font = new Font(Font, neutralSize);
                 }
             }
         }
@@ -119,7 +119,7 @@ namespace Seed
         }
 
         /// <summary>
-        /// Draws text on the screen.
+        /// Draws the text on the screen.
         /// </summary>
         public override void Draw()
         {
@@ -144,7 +144,7 @@ namespace Seed
                 col.RelativeYStart = 0;
                 col.RelativeYEnd = -(Size * _heightLetters);
             }
-            float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+            float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky, false);
             if (neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col))
             {
                 if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _font == null || _brush == null)
@@ -153,17 +153,21 @@ namespace Seed
                     _brush = new SolidBrush(Color);
                     _font?.Dispose();
                     if (neutralSize != 0)
-                        _font = new Font(Font, neutralSize);  
+                        _font = new Font(Font, neutralSize);
                 }
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;
-                GameLogic.G.DrawString(DisplayText, _font, _brush, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), format);
+                GameLogic.G.DrawString(DisplayText, _font, _brush, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky, false), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky, false), format);
                 _widthAtLastDraw = GameLogic.Width;
                 _heightAtLastDraw = GameLogic.Height;
                 _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
         }
 
+        /// <summary>
+        /// Draws the text on a DrawingSection.
+        /// </summary>
+        /// <param name="section">The section for the text to be drawn on.</param>
         public override void DrawOnSection(DrawingSection section)
         {
             Collider col = new Collider(0, Size * DisplayText.Length, 0, Size * _heightLetters, this);
@@ -187,7 +191,7 @@ namespace Seed
                 col.RelativeYStart = 0;
                 col.RelativeYEnd = -(Size * _heightLetters);
             }
-            float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky);
+            float neutralSize = (float)ScaleConverter.GameToNeutral(Size, false, false, IsSticky, false);
             if (neutralSize != 0 && Collider.IsColliding(GameLogic.IsInScreenRect, col) && Collider.IsColliding(section, col))
             {
                 if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _font == null || _brush == null)
@@ -196,18 +200,26 @@ namespace Seed
                     _brush = new SolidBrush(Color);
                     _font?.Dispose();
                     if (neutralSize != 0)
-                        _font = new Font(Font, neutralSize);  
+                        _font = new Font(Font, neutralSize);
                 }
                 format.Alignment = (StringAlignment)HorisontalAlignment;
                 format.LineAlignment = (StringAlignment)VerticalAlignment;
                 _font = new Font(Font, neutralSize);
-                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
-                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
+                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky, false);
+                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky, false);
                 section.G.DrawString(DisplayText, _font, _brush, neutralX, neutralY, format);
                 _widthAtLastDraw = GameLogic.Width;
                 _heightAtLastDraw = GameLogic.Height;
                 _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
+        }
+
+        /// <summary>
+        /// Disposes the resources used by this text.
+        /// </summary>
+        public override void Dispose()
+        {
+            _brush.Dispose();
         }
     }
 

@@ -34,9 +34,9 @@ namespace Seed
         /// <param name="e">The event arguments.</param>
         public static void GetMousePos(object? sender, MouseEventArgs e)
         {
-            double unit = (Math.Min(GameLogic.Width, GameLogic.Height) / GameLogic.UnitsOnCanvas);
-            PosX = e.X / unit - GameLogic.Width / unit / 2 + Camera.PosX;
-            PosY = e.Y / unit - GameLogic.Height / unit / 2 + Camera.PosY;
+            double unit = Math.Min(GameLogic.WindowWidth, GameLogic.WindowHeight) / GameLogic.UnitsOnCanvas;
+            PosX = e.X / unit - GameLogic.WindowWidth / unit / 2 + Camera.PosX;
+            PosY = e.Y / unit - GameLogic.WindowHeight / unit / 2 + Camera.PosY;
         }
 
         /// <summary>

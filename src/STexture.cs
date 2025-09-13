@@ -4,7 +4,7 @@ namespace Seed;
 /// <summary>
 /// Class that represents a texture;
 /// </summary>
-public class STexture
+public class STexture : IDisposable
 {
     /// <summary>
     /// The source image of the texture;
@@ -48,6 +48,14 @@ public class STexture
     public STexture(STexture originTexture)
     {
         Image = originTexture.Image;
+    }
+
+    /// <summary>
+    /// Disposes the resources used by this STexture
+    /// </summary>
+    public void Dispose()
+    {
+        Image.Dispose();
     }
 }
 

@@ -31,7 +31,7 @@ namespace Seed
                 if (_pen != null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky, false));
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Seed
                 if (_pen != null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky, false));
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Seed
             _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
         }
         /// <summary>
-        /// Draws a line on the game window.
+        /// Draws the line on the game window.
         /// </summary>
         public override void Draw()
         {
@@ -95,15 +95,19 @@ namespace Seed
                 if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
                 {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky, false));
                 }
-                GameLogic.G.DrawLine(_pen, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky), (float)ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky));
+                GameLogic.G.DrawLine(_pen, (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky, false), (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky, false), (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky, false), (float)ScaleConverter.GameToNeutral(EndPosY, true, false, IsSticky, false));
                 _widthAtLastDraw = GameLogic.Width;
                 _heightAtLastDraw = GameLogic.Height;
                 _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
         }
 
+        /// <summary>
+        /// Draws the line on a DrawingSection.
+        /// </summary>
+        /// <param name="section">The section for the line to be drawn on.</param>
         public override void DrawOnSection(DrawingSection section)
         {
             double MinX = Math.Min(EndPosX, PosX);
@@ -114,19 +118,27 @@ namespace Seed
             if (Collider.IsColliding(GameLogic.IsInScreenRect, col) && Collider.IsColliding(section, col))
             {
                 if (GameLogic.Width != _widthAtLastDraw || GameLogic.Height != _heightAtLastDraw || _unitsAtLastDraw != GameLogic.UnitsOnCanvas || _pen == null)
-                {   
+                {
                     _pen?.Dispose();
-                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky));
+                    _pen = new Pen(Color, (float)ScaleConverter.GameToNeutral(Width, false, false, IsSticky, false));
                 }
-                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
-                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
-                float neutralEndX = (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky);
-                float neutralEndY = (float)ScaleConverter.GameToNeutral(EndPosX, true, false, IsSticky) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky);
+                float neutralX = (float)ScaleConverter.GameToNeutral(PosX, true, true, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky, false);
+                float neutralY = (float)ScaleConverter.GameToNeutral(PosY, true, false, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky, false);
+                float neutralEndX = (float)ScaleConverter.GameToNeutral(EndPosX, true, true, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosX, true, true, section.IsSticky, false);
+                float neutralEndY = (float)ScaleConverter.GameToNeutral(EndPosX, true, false, IsSticky, false) - (float)ScaleConverter.GameToNeutral(section.PosY, true, false, section.IsSticky, false);
                 section.G.DrawLine(_pen, neutralX, neutralY, neutralEndX, neutralEndY);
                 _widthAtLastDraw = GameLogic.Width;
                 _heightAtLastDraw = GameLogic.Height;
                 _unitsAtLastDraw = GameLogic.UnitsOnCanvas;
             }
+        }
+        
+        /// <summary>
+        /// Disposes the resources used by this line.
+        /// </summary>
+        public override void Dispose()
+        {
+            _pen.Dispose();
         }
     }
 }
