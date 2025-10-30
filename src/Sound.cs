@@ -10,6 +10,7 @@ namespace Seed
         WaveOutEvent _outputDevice = new WaveOutEvent();
         AudioFileReader _soundFile;
         private bool _isPlaying;
+		readonly bool _isInitialized;
         /// <summary>
         /// True if the sound is playing, otherwise false.
         /// </summary>
@@ -19,11 +20,11 @@ namespace Seed
             {
                 if (_isPlaying && _outputDevice.PlaybackState == PlaybackState.Stopped)
                 {
-                    _outputDevice.Stop();
+					if(_isInitialized)
+                    	_outputDevice.Stop();
                     _soundFile.Position = 0;
                     _isPlaying = false;
                 }
-
                 return _isPlaying;
             }
             private set
@@ -60,8 +61,16 @@ namespace Seed
         public Sound(string path, float volume)
         {
             this.path = path;
-            _soundFile = new AudioFileReader(path);
-            _outputDevice.Init(_soundFile);
+			try
+			{
+				_soundFile = new AudioFileReader(path);
+				_outputDevice.Init(_soundFile);
+				_isInitialized = true;
+			}
+			catch
+			{
+				_isInitialized = false;
+			}
         }
 
         /// <summary>
@@ -72,7 +81,8 @@ namespace Seed
             if (!IsPlaying)
             {
                 IsPlaying = true;
-                _outputDevice.Play();
+				if(_isInitialized)
+                	_outputDevice.Play();
             }
         }
 
@@ -81,7 +91,8 @@ namespace Seed
         /// </summary>
         public void Stop()
         {
-            _outputDevice.Stop();
+			if(_isInitialized)
+				_outputDevice.Stop();
             _soundFile.Position = 0;
             IsPlaying = false;
         }
