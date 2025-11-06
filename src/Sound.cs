@@ -5,7 +5,7 @@ namespace Seed
     /// <summary>
     /// A class that represents a sound.
     /// </summary>
-    public class Sound
+    public class Sound : IDisposable
     {
         WaveOutEvent _outputDevice = new WaveOutEvent();
         AudioFileReader _soundFile;
@@ -91,10 +91,19 @@ namespace Seed
         /// </summary>
         public void Stop()
         {
-			if(_isInitialized)
-				_outputDevice.Stop();
+            if (_isInitialized)
+                _outputDevice.Stop();
             _soundFile.Position = 0;
             IsPlaying = false;
+        }
+
+        /// <summary>
+        /// Disposes the resources used by the sound.
+        /// </summary>
+        public void Dispose()
+        {
+            _outputDevice?.Dispose();
+            _soundFile?.Dispose();
         }
     }
 }

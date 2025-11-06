@@ -94,7 +94,7 @@ namespace Seed
         /// </summary>
         public override void Dispose()
         {
-            Texture.Dispose();
+            Texture?.Dispose();
         }
     }
 }

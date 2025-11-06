@@ -219,7 +219,7 @@ namespace Seed
         /// </summary>
         public override void Dispose()
         {
-            _brush.Dispose();
+            _brush?.Dispose();
         }
     }
 

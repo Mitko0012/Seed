@@ -41,6 +41,5 @@ namespace Seed
         {
             KeysDown[e.KeyCode.ToString()] = false;
         }
-   
     }
 }

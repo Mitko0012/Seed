@@ -55,7 +55,7 @@ public class STexture : IDisposable
     /// </summary>
     public void Dispose()
     {
-        Image.Dispose();
+        Image?.Dispose();
     }
 }
 

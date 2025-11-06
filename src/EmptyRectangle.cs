@@ -138,7 +138,7 @@ namespace Seed
         /// </summary>
         public override void Dispose()
         {
-            _pen.Dispose();
+            _pen?.Dispose();
         }
     }
 }
