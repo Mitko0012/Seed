@@ -9,14 +9,14 @@
     <OutputType>Library</OutputType>
     <PackageId>SeedLib</PackageId>
     <Authors>Mitko0012</Authors>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Version>1.3.6</Version>
     <RootNamespace>Seed</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <DocumentationFile>bin\release\net9.0-windows\Seed.xml</DocumentationFile>
+    <DocumentationFile>bin\release\net8.0-windows\Seed.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>
