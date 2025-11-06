@@ -5,14 +5,30 @@ namespace Seed
     /// </summary>
     public static class Mouse
     {
+        static double _posX;
         /// <summary>
-        /// The X position of the mouse in game units.
+        /// Gets the X position of the mouse in game units.
         /// </summary>
-        public static double PosX {get; private set;}
+        public static double PosX
+        {
+            get
+            {
+                double unit = Math.Min(GameLogic.WindowWidth, GameLogic.WindowHeight) / GameLogic.UnitsOnCanvas;
+                return _posX / unit - GameLogic.WindowWidth / unit / 2 + Camera.PosX;
+            }
+        }
+        static double _posY;
         /// <summary>
-        /// The Y position of the mouse in game units.
+        /// Gets the Y position of the mouse in game units.
         /// </summary>
-        public static double PosY {get; private set;}
+        public static double PosY
+        {
+            get
+            {
+                double unit = Math.Min(GameLogic.WindowWidth, GameLogic.WindowHeight) / GameLogic.UnitsOnCanvas;
+                return _posY / unit - GameLogic.WindowHeight / unit / 2 + Camera.PosY;
+            }
+        }
 
         /// <summary>
         /// True if the left mouse button is down, otherwise false.
@@ -35,8 +51,8 @@ namespace Seed
         public static void GetMousePos(object? sender, MouseEventArgs e)
         {
             double unit = Math.Min(GameLogic.WindowWidth, GameLogic.WindowHeight) / GameLogic.UnitsOnCanvas;
-            PosX = e.X / unit - GameLogic.WindowWidth / unit / 2 + Camera.PosX;
-            PosY = e.Y / unit - GameLogic.WindowHeight / unit / 2 + Camera.PosY;
+            _posX = e.X;
+            _posY = e.Y;
         }
 
         /// <summary>
